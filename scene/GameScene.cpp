@@ -6,10 +6,6 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	//デストラクタ
-	//モデル
-	delete model_;
-	//自キャラ
-	delete player_;
 }
 
 void GameScene::Initialize() {
@@ -21,16 +17,16 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("kaeru.png");
 	//3Dモデルの生成
-	model_ = Model::Create();
+	model_.reset(Model::Create());
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
 	//自キャラの生成
-	player_ = new Player();
+	player_ = std::make_unique<Player>();
    //自キャラの初期化
-	player_->Initialize(model_,textureHandle_);
+	player_->Initialize(model_.get(), textureHandle_);
 
 }
 

@@ -8,7 +8,9 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include<memory>
 #include <Player.h>
+
 
 /// <summary>
 /// ゲームシーン
@@ -50,7 +52,7 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 
 	//3Dモデル
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> model_;
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	//ビュープロジェクション
@@ -58,8 +60,7 @@ private: // メンバ変数
 
 
 	//自キャラ
-	Player* player_ = nullptr;
-
+	std::unique_ptr <Player> player_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
