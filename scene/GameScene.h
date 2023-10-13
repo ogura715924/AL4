@@ -10,6 +10,9 @@
 #include "WorldTransform.h"
 #include<memory>
 #include <Player.h>
+#include <Skydome.h>
+#include <Ground.h>
+#include <DebugCamera.h>
 
 
 /// <summary>
@@ -50,18 +53,21 @@ private: // メンバ変数
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-
-	//3Dモデル
-	std::unique_ptr<Model> model_;
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
 
+	// デバッグカメラ
+	DebugCamera* debugCamera_ = nullptr;
 
 	//自キャラ
+	std::unique_ptr<Model> modelPlayer_;
 	std::unique_ptr <Player> player_;
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
+	//天球
+	std::unique_ptr<Model> modelSkydome_;
+	std::unique_ptr<Skydome> skydome_;
+	//床
+	std::unique_ptr<Model> modelGround_;
+	std::unique_ptr<Ground> ground_;
 };
