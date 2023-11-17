@@ -13,6 +13,7 @@
 #include <Skydome.h>
 #include <Ground.h>
 #include <DebugCamera.h>
+#include <FollowCamera.h>
 
 
 /// <summary>
@@ -60,9 +61,15 @@ private: // メンバ変数
 
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
+	//追従カメラ
+	FollowCamera* followCamera_ = nullptr;
 
 	//自キャラ
-	std::unique_ptr<Model> modelPlayer_;
+	std::unique_ptr<Model> modelFighterBody_;
+	std::unique_ptr<Model> modelFighterHead_;
+	std::unique_ptr<Model> modelFighterL_arm_;
+	std::unique_ptr<Model> modelFighterR_arm_;
+	//std::unique_ptr<Model> modelPlayer_;
 	std::unique_ptr <Player> player_;
 	//天球
 	std::unique_ptr<Model> modelSkydome_;
