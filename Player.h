@@ -28,9 +28,7 @@ public:
 	//浮遊ギミック更新
 	void UpdateFloatingGimmick();
 
-	void SetViewProjection(const ViewProjection* viewProjection) {
-		viewProjection_ = viewProjection;
-	}
+	
 
 	//親となるワールドトランスフォーム
 	void SetParent(const WorldTransform* parent);

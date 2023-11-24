@@ -49,6 +49,8 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 }
 
 void Player::Update() {
+	//浮遊ギミック
+	UpdateFloatingGimmick();
 		
 	////キャラクターの移動ベクトル
 	//Vector3 move = {0, 0, 0};
@@ -128,23 +130,28 @@ void Player::InitializeFloatingGimmick() {
 
 void Player::UpdateFloatingGimmick() {
 //浮遊移動のサイクル<frame>
-	uint16_t frame = 3;
-	const uint16_t cycle = frame;
+	uint16_t frame = 180;
 	//1フレームでのパラメータ加算値
-	const float step = (float)(2.0f * M_PI / cycle);
+	const float step = (float)(2.0f * M_PI / frame);
 	//パラメータを1ステップ分加算
 	floatingParameter_ += step;
 	//2πを超えたら0に戻す
 	floatingParameter_ = (float)std::fmod(floatingParameter_, 2.0 * M_PI);
 	//浮遊の振幅<m>
-	const float m = 3;
+	const float SwingWidth = 0.5;
 	//浮遊を座標に反映
-	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * m;
+	//体上下
+	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * SwingWidth;
+	//腕振り
+	worldTransformL_arm_.translation_.z = std::sin(floatingParameter_) * SwingWidth;
+	worldTransformR_arm_.translation_.z = std::sin(floatingParameter_) * SwingWidth;
 
 
 	//数値調整
-	//ImGui::Begin("Player");
-
+	ImGui::Begin("Player");
+	//ImGui::SliderAngle("Head Translation", &worldTransformHead_, slidermin);
+	//スライダー？
+    ImGui::End();
 }
 
 void Player::SetParent(const WorldTransform* parent) {
@@ -152,7 +159,3 @@ void Player::SetParent(const WorldTransform* parent) {
 	worldTransform_.parent_ = parent;
 }
 
-//void Player::SetParentPlayer(const WorldTransform* parent) {
-//	// 親子関係を結ぶ
-//	worldTransformBody_.parent_ = parent;
-//}
