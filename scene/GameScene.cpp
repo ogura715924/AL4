@@ -43,6 +43,7 @@ void GameScene::Initialize() {
 	player_->Initialize(modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(), modelFighterR_arm_.get(), textureHandle_);
 	//自キャラ生成と初期化処理
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
+	
 
 	//天球(モデル)の生成
 	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));

@@ -32,8 +32,13 @@ public:
 		viewProjection_ = viewProjection;
 	}
 
+	//親となるワールドトランスフォーム
+	void SetParent(const WorldTransform* parent);
+	//void SetParentPlayer(const WorldTransform* parent);
+
 
 	const WorldTransform& GetWorldTransform() { return worldTransform_; }
+	//const WorldTransform& GetWorldTransformPlayer() { return worldTransformBody_; }
 
 	// キーボード入力
 	Input* input_ = nullptr;
@@ -41,6 +46,10 @@ public:
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+	WorldTransform worldTransformBody_;
+	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformL_arm_;
+	WorldTransform worldTransformR_arm_;
 	// モデル
 	Model* modelFighterBody_ = nullptr;
 	Model* modelFighterHead_ = nullptr;
@@ -52,8 +61,6 @@ private:
 	XINPUT_STATE joyState;
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
-//富裕ギミックの媒介変数
+//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
-	//座標
-	WorldTransform worldTransformBody_;
 };
