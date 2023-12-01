@@ -9,19 +9,20 @@
 #include <cassert>
 #include <imgui.h>
 #include <MyMath.h>
+#include"BaseCharacter.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-class Player {
+//BaceCharacterの継承
+class Player : public BaseCharacter {
 public:
 	// 初期化
-	void Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm,
-	    uint32_t textureHandle);
+	void Initialize(const std::vector<Model*>& models) override;
 	// 更新
-	void Update();
+	void Update()override;
 	// 描画
-	void Draw(const ViewProjection& viewProjection_);
+	void Draw(const ViewProjection& viewProjection_)override;
 
 	//浮遊ギミック初期化
 	void InitializeFloatingGimmick();

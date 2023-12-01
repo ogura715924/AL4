@@ -1,13 +1,15 @@
 ﻿#include"Player.h"
 
 
-void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm, 
-    uint32_t textureHandle) {
+void Player::Initialize(const std::vector<Model*>& models) {
 	// NULLポインタチェック
 	assert(modelBody);
 	assert(modelHead);
 	assert(modelL_arm);
 	assert(modelR_arm);
+
+	//基底クラスの初期化
+	BaseCharacter::Initialize(models);
 
 	// 引数として受け取ったデータをメンバ関数に記録(代入)する
 	modelFighterBody_ = modelBody;
@@ -15,7 +17,7 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 	modelFighterL_arm_ = modelL_arm;
 	modelFighterR_arm_ = modelR_arm;
 	
-	textureHandle_ = textureHandle;
+	//textureHandle_ = textureHandle;
 	//ワールド返還の初期化
 	worldTransform_.Initialize();
 	worldTransformBody_.Initialize();
@@ -101,6 +103,7 @@ void Player::Draw(const ViewProjection& ViewProjection) {
 	modelFighterL_arm_->Draw(worldTransformL_arm_, ViewProjection);
 	modelFighterR_arm_->Draw(worldTransformR_arm_, ViewProjection);
 
+	models_[kModelIndexBody]->Draw(worldTransformBody_, ViewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { 
