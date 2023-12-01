@@ -61,4 +61,8 @@ private:
 	const ViewProjection* viewProjection_ = nullptr;
 //浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
+	//デバック
+	float inputFloat3[3] = {0, 0, 0};
+	Vector3 SliderMin = {-1000, -1000, -1000};
+	Vector3 SliderMax = {1000,1000,1000};
 };

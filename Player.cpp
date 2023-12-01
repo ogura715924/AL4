@@ -51,27 +51,6 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 void Player::Update() {
 	//浮遊ギミック
 	UpdateFloatingGimmick();
-		
-	////キャラクターの移動ベクトル
-	//Vector3 move = {0, 0, 0};
-	////キャラクターの移動速さ
-	//const float kCharacterSpeed = 0.2f;
-	////おした方向で移動ベクトルを変更(左右)
-	//if (input_->PushKey(DIK_LEFT)) {
-	//	move.x -= kCharacterSpeed;
-	//} else if (input_->PushKey(DIK_RIGHT)) {
-	//	move.x += kCharacterSpeed;
-	//}
-	//	// おした方向で移動ベクトルを変更(奥と手前)
-	//if (input_->PushKey(DIK_UP)) {
-	//	move.z += kCharacterSpeed;
-	//} else if (input_->PushKey(DIK_DOWN)) {
-	//	move.z -= kCharacterSpeed;
-	//}
-	////座標移動(ベクトルの加算)
-	//worldTransform_.translation_.x += move.x;
-	//worldTransform_.translation_.z += move.z;
-
 	
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
@@ -143,15 +122,15 @@ void Player::UpdateFloatingGimmick() {
 	//体上下
 	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * SwingWidth;
 	//腕振り
-	worldTransformL_arm_.translation_.z = std::sin(floatingParameter_) * SwingWidth;
-	worldTransformR_arm_.translation_.z = std::sin(floatingParameter_) * SwingWidth;
-
+	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
+	worldTransformR_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
 
 	//数値調整
-	ImGui::Begin("Player");
-	//ImGui::SliderAngle("Head Translation", &worldTransformHead_, slidermin);
-	//スライダー？
-    ImGui::End();
+	//ImGui::Begin("Player");
+	////ImGui::SliderFloat3("Head Translation", &(worldTransformHead_, SliderMin.x, SliderMax.x));
+	//ImGui::SliderInt3("Head Translation", &worldTransformHead_, SliderMin.x, SliderMax.x);
+
+	//ImGui::End();
 }
 
 void Player::SetParent(const WorldTransform* parent) {
