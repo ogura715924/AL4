@@ -17,8 +17,10 @@
 //BaceCharacterの継承
 class Player : public BaseCharacter {
 public:
+		
 	// 初期化
-	void Initialize(const std::vector<Model*>& models) override;
+	void Initialize(
+	    const std::vector<Model*>& models) override;
 	// 更新
 	void Update()override;
 	// 描画
@@ -43,6 +45,12 @@ public:
 	Input* input_ = nullptr;
 
 private:
+	enum  {
+		kModelIndexBody,
+		kModelIndexHead,
+		kModelIndexL_arm,
+		kModelIndexR_arm
+	};
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformBody_;

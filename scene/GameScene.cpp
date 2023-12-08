@@ -32,13 +32,13 @@ void GameScene::Initialize() {
 #pragma region //モデルとクラスの実態生成、初期化
 	// モデルをメンバ変数に持っているクラスはモデルとワンセットでGameSceneに書く
 	//自キャラの3Dモデルの生成
-	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body",true));
+	/*modelFighterBody_.reset(Model::CreateFromOBJ("float_Body",true));
 	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
 		modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
-			modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
+			modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));*/
 	//modelPlayer_.reset(Model::CreateFromOBJ("player",true));
 	
-			//自キャラも出る
+			//自キャラモデル
 	        std::vector<Model*> playerModels = {
 	            modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
 	            modelFighterR_arm_.get()};

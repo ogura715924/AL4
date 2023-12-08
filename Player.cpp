@@ -1,15 +1,15 @@
 ﻿#include"Player.h"
 
 
-void Player::Initialize(const std::vector<Model*>& models) {
+void Player::Initialize(
+    const std::vector<Model*>& models) {
+	//基底クラスの初期化
+	BaseCharacter::Initialize(models);
 	// NULLポインタチェック
 	assert(modelBody);
 	assert(modelHead);
 	assert(modelL_arm);
 	assert(modelR_arm);
-
-	//基底クラスの初期化
-	BaseCharacter::Initialize(models);
 
 	// 引数として受け取ったデータをメンバ関数に記録(代入)する
 	modelFighterBody_ = modelBody;
