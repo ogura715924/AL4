@@ -6,16 +6,13 @@ void Player::Initialize(
 	//基底クラスの初期化
 	BaseCharacter::Initialize(models);
 	// NULLポインタチェック
-	assert(modelBody);
-	assert(modelHead);
-	assert(modelL_arm);
-	assert(modelR_arm);
+	assert(models.size());
 
 	// 引数として受け取ったデータをメンバ関数に記録(代入)する
-	modelFighterBody_ = modelBody;
-	modelFighterHead_ = modelHead;
-	modelFighterL_arm_ = modelL_arm;
-	modelFighterR_arm_ = modelR_arm;
+	modelFighterBody_ = models[kModelIndexBody];
+	modelFighterHead_ = models[kModelIndexHead];
+	modelFighterL_arm_ = models[kModelIndexL_arm];
+	modelFighterR_arm_ = models[kModelIndexR_arm];
 	
 	//textureHandle_ = textureHandle;
 	//ワールド返還の初期化
@@ -98,12 +95,11 @@ void Player::Update() {
 
 void Player::Draw(const ViewProjection& ViewProjection) {
 	// 3Dモデルを描画
-	modelFighterBody_->Draw(worldTransformBody_, ViewProjection);
-	modelFighterHead_->Draw(worldTransformHead_, ViewProjection);
-	modelFighterL_arm_->Draw(worldTransformL_arm_, ViewProjection);
-	modelFighterR_arm_->Draw(worldTransformR_arm_, ViewProjection);
 
 	models_[kModelIndexBody]->Draw(worldTransformBody_, ViewProjection);
+	models_[kModelIndexHead]->Draw(worldTransformHead_, ViewProjection);
+	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, ViewProjection);
+	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { 
