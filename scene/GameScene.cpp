@@ -5,7 +5,7 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	//デストラクタ
+	// デストラクタ
 }
 
 void GameScene::Initialize() {
@@ -14,53 +14,68 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	//ファイル名を指定してテクスチャを読み込む
-	//自機
-	//textureHandle_ = TextureManager::Load("kaeru.png");
-	//ワールドトランスフォームの初期化
+	// ファイル名を指定してテクスチャを読み込む
+	// 自機
+	// textureHandle_ = TextureManager::Load("kaeru.png");
+	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
-	
-	//ビュープロジェクションの初期化
+
+	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
-	viewProjection_.translation_={0,0,0};
+	viewProjection_.translation_ = {0, 0, 0};
 	viewProjection_.UpdateMatrix();
-	
+
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
-	
 
-#pragma region //モデルとクラスの実態生成、初期化
+#pragma region // モデルとクラスの実態生成、初期化
 	// モデルをメンバ変数に持っているクラスはモデルとワンセットでGameSceneに書く
-	//自キャラの3Dモデルの生成
-	/*modelFighterBody_.reset(Model::CreateFromOBJ("float_Body",true));
+	// 自キャラの3Dモデルの生成
+	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body",true));
 	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
-		modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
-			modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));*/
-	//modelPlayer_.reset(Model::CreateFromOBJ("player",true));
-	
-			//自キャラモデル
-	        std::vector<Model*> playerModels = {
-	            modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
-	            modelFighterR_arm_.get()};
-	
-	//自キャラの生成
-	player_ = std::make_unique<Player>();
-   //自キャラの初期化
-	player_->Initialize(playerModels);
-	// player_->Initialize(modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(), modelFighterR_arm_.get(), textureHandle_);
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
+	 //modelPlayer_.reset(Model::CreateFromOBJ("player",true));
 
-	//天球(モデル)の生成
+	// 自キャラモデル
+	std::vector<Model*> playerModels = {
+	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
+	    modelFighterR_arm_.get()};
+
+	// 自キャラの生成
+	player_ = std::make_unique<Player>();
+	// 自キャラの初期化
+	player_->Initialize(playerModels);
+	// player_->Initialize(modelFighterBody_.get(), modelFighterHead_.get(),
+	// modelFighterL_arm_.get(), modelFighterR_arm_.get(), textureHandle_);
+
+	// 敵キャラの3Dモデルの生成
+	modelEnemyBody_.reset(Model::CreateFromOBJ("needle_Body", true));
+	modelEnemyL_arm_.reset(Model::CreateFromOBJ("needle_L_arm", true));
+	modelEnemyR_arm_.reset(Model::CreateFromOBJ("needle_R_arm", true));
+
+	// 敵キャラモデル
+	std::vector<Model*> EnemyModels = {
+	    modelEnemyBody_.get(), modelEnemyL_arm_.get(),
+	    modelEnemyR_arm_.get()};
+
+	// 敵キャラの生成
+	enemy_ = std::make_unique<Enemy>();
+	// 敵キャラの初期化
+	enemy_->Initialize(EnemyModels);
+	
+	// 天球(モデル)の生成
 	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));
 	// 天球(クラス)の生成
 	skydome_ = std::make_unique<Skydome>();
-	//天球の初期化
-	skydome_->Initialize(modelSkydome_.get() );
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_.get());
 
 	// 床の(モデル)生成
 	modelGround_.reset(Model::CreateFromOBJ("ground", true));
-	//床の(クラス)生成
+	// 床の(クラス)生成
 	ground_ = std::make_unique<Ground>();
-	//床の初期化
+	// 床の初期化
 	ground_->Initialize(modelGround_.get());
 
 	// 追従カメラの生成
@@ -70,12 +85,13 @@ void GameScene::Initialize() {
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 #pragma endregion
-
 }
 
 void GameScene::Update() {
 	// プレイヤーの更新
 	player_->Update();
+	//敵の更新
+	enemy_->Update();
 	// 天球の更新
 	skydome_->Update();
 	// 床の更新
@@ -88,13 +104,10 @@ void GameScene::Update() {
 	viewProjection_.matView = followCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
-
 }
 
 void GameScene::Draw() {
 
-	
-	
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
@@ -119,19 +132,20 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	 
+
 	// 自キャラの描画
-	//player_->Draw(debugCamera_->GetViewProjection());デバッグカメラ
-	//追従カメラ
+	// //デバックカメラ
+	// player_->Draw(debugCamera_->GetViewProjection());デバッグカメラ
+	// 追従カメラ
 	player_->Draw(followCamera_->GetViewProjection());
-
-	//天球の描画
-	//skydome_->Draw(debugCamera_->GetViewProjection());
+	//敵キャラ
+	enemy_->Draw(debugCamera_->GetViewProjection());
+	// 天球の描画
+	// skydome_->Draw(debugCamera_->GetViewProjection());
 	skydome_->Draw(followCamera_->GetViewProjection());
-	//床の更新
-	//ground_->Draw(debugCamera_->GetViewProjection());
+	// 床の更新
+	// ground_->Draw(debugCamera_->GetViewProjection());
 	ground_->Draw(followCamera_->GetViewProjection());
-
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

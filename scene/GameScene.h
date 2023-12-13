@@ -14,6 +14,7 @@
 #include <Ground.h>
 #include <DebugCamera.h>
 #include <FollowCamera.h>
+#include <Enemy.h>
 
 
 /// <summary>
@@ -71,6 +72,12 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelFighterR_arm_;
 	//std::unique_ptr<Model> modelPlayer_;
 	std::unique_ptr <Player> player_;
+	//敵キャラ
+	std::unique_ptr<Model> modelEnemyBody_;
+	std::unique_ptr<Model> modelEnemyL_arm_;
+	std::unique_ptr<Model> modelEnemyR_arm_;
+	std::unique_ptr<Enemy> enemy_;
+
 	//天球
 	std::unique_ptr<Model> modelSkydome_;
 	std::unique_ptr<Skydome> skydome_;

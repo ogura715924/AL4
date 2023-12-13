@@ -1,16 +1,21 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
 #include <cassert>
+#include"MyMath.h"
 
 class Enemy:public BaseCharacter {
 public:
-	void Initialize(Model* modelBody, Model* modelL_arm, Model* modelR_arm);
-	void Update();
-	void Draw(const ViewProjection& ViewProjection);
+	void Initialize(const std::vector<Model*>& models)override;
+	void Update()override;
+	void Draw(const ViewProjection& viewProjection_) override;
 
 	// 親となるワールドトランスフォーム
 	void SetParent(const WorldTransform* parent);
 	private:
+	enum { kModelIndexBody,
+		kModelIndexL_arm,
+		kModelIndexR_arm };
+
 		//ワールド変換
 	WorldTransform worldTransform_;
 	    WorldTransform worldTransformBody_;

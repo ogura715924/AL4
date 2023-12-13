@@ -9,19 +9,19 @@ void Player::Initialize(
 	assert(models.size());
 
 	// 引数として受け取ったデータをメンバ関数に記録(代入)する
-	modelFighterBody_ = models[kModelIndexBody];
-	modelFighterHead_ = models[kModelIndexHead];
-	modelFighterL_arm_ = models[kModelIndexL_arm];
-	modelFighterR_arm_ = models[kModelIndexR_arm];
+	//modelFighterBody_ = models[kModelIndexBody];
+	//modelFighterHead_ = models[kModelIndexHead];
+	//modelFighterL_arm_ = models[kModelIndexL_arm];
+	//modelFighterR_arm_ = models[kModelIndexR_arm];
 	
-	//textureHandle_ = textureHandle;
 	//ワールド返還の初期化
 	worldTransform_.Initialize();
 	worldTransformBody_.Initialize();
 	worldTransformHead_.Initialize();
 	worldTransformL_arm_.Initialize();
 	worldTransformR_arm_.Initialize();
-
+	
+	// 基底クラスのベースキャラクターworldTransformを親子関係のベースとする
 	//ボディの親をにする
 	worldTransformBody_.parent_ = &worldTransform_;
 	//ヘッドの親をボディにする
@@ -45,11 +45,16 @@ void Player::Initialize(
 	worldTransformR_arm_.scale_ = {1, 1, 1};
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+
+	
 }
 
 void Player::Update() {
 	//浮遊ギミック
 	UpdateFloatingGimmick();
+
+	//基底クラス
+	BaseCharacter::Update();
 	
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
@@ -66,40 +71,29 @@ void Player::Update() {
 		worldTransform_.translation_.x += move.x;
 		worldTransform_.translation_.z += move.z;
 
-		// 行列を更新
-		//本体
-		MakeAffineMatrix(
-		    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-		worldTransform_.UpdateMatrix();
-		//体
-		MakeAffineMatrix(
-		    worldTransformBody_.scale_, worldTransformBody_.rotation_, worldTransformBody_.translation_);
-		worldTransformBody_.UpdateMatrix();
-		//頭
-		MakeAffineMatrix(
-		    worldTransformHead_.scale_, worldTransformHead_.rotation_, worldTransformHead_.translation_);
-		worldTransformHead_.UpdateMatrix();
-		//Lうで
-		MakeAffineMatrix(
-		    worldTransformL_arm_.scale_, worldTransformL_arm_.rotation_, worldTransformL_arm_.translation_);
-		worldTransformL_arm_.UpdateMatrix();
-		//Rうで
-		MakeAffineMatrix(
-		    worldTransformR_arm_.scale_, worldTransformR_arm_.rotation_, worldTransformR_arm_.translation_);
-		worldTransformR_arm_.UpdateMatrix();
-
 		// Y軸周り角度
 		worldTransform_.rotation_.y = std::atan2(move.x, move.z);
 	}
+	// 行列を更新
+	// 本体
+	worldTransform_.UpdateMatrix();
+	// 体
+	worldTransformBody_.UpdateMatrix();
+	// 頭
+	worldTransformHead_.UpdateMatrix();
+	// Lうで
+	worldTransformL_arm_.UpdateMatrix();
+	// Rうで
+	worldTransformR_arm_.UpdateMatrix();
+
 }
 
 void Player::Draw(const ViewProjection& ViewProjection) {
 	// 3Dモデルを描画
-
-	models_[kModelIndexBody]->Draw(worldTransformBody_, ViewProjection);
-	models_[kModelIndexHead]->Draw(worldTransformHead_, ViewProjection);
-	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, ViewProjection);
-	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
+		models_[kModelIndexBody]->Draw(worldTransformBody_, ViewProjection);
+		models_[kModelIndexHead]->Draw(worldTransformHead_, ViewProjection);
+		models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, ViewProjection);
+		models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { 

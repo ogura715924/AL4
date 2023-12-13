@@ -17,11 +17,11 @@ Vector3 Multiply(float scalar, const Vector3& v);
 Matrix4x4 Multiply(const Matrix4x4& matrix, const Matrix4x4& matrixa);
 
 // 1.X軸回転行列
-Matrix4x4 MakeRotstrXMatrix(float radian);
+Matrix4x4 MakeRotateXMatrix(float radian);
 // 2.Y軸回転行列
-Matrix4x4 MakeRotstrYMatrix(float radian);
+Matrix4x4 MakeRotateYMatrix(float radian);
 // 3.Z軸回転行列
-Matrix4x4 MakeRotstrZMatrix(float radian);
+Matrix4x4 MakeRotateZMatrix(float radian);
 
 //アフィン変換行列の作成
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);

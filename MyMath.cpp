@@ -30,7 +30,7 @@ Matrix4x4 Multiply(const Matrix4x4& matrix, const Matrix4x4& matrixa) {
 	return result;
 }
 
-Matrix4x4 MakeRotstrXMatrix(float radian) {
+Matrix4x4 MakeRotateXMatrix(float radian) {
 	Matrix4x4 resultX{};
 	resultX.m[0][0] = 1.0f;
 	resultX.m[0][1] = 0.0f;
@@ -55,7 +55,7 @@ Matrix4x4 MakeRotstrXMatrix(float radian) {
 	return resultX;
 }
 
-Matrix4x4 MakeRotstrYMatrix(float radian) {
+Matrix4x4 MakeRotateYMatrix(float radian) {
 	Matrix4x4 resultY{};
 	resultY.m[0][0] = cosf(radian);
 	resultY.m[0][1] = 0.0f;
@@ -79,7 +79,7 @@ Matrix4x4 MakeRotstrYMatrix(float radian) {
 
 	return resultY;
 };
-Matrix4x4 MakeRotstrZMatrix(float radian) {
+Matrix4x4 MakeRotateZMatrix(float radian) {
 	Matrix4x4 resultZ{};
 	resultZ.m[0][0] = cosf(radian);
 	resultZ.m[0][1] = sinf(radian);
@@ -105,9 +105,9 @@ Matrix4x4 MakeRotstrZMatrix(float radian) {
 };
 
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
-	Matrix4x4 rotateXmatrix = MakeRotstrXMatrix(rotate.x);
-	Matrix4x4 rotateYmatrix = MakeRotstrYMatrix(rotate.y);
-	Matrix4x4 rotateZmatrix = MakeRotstrZMatrix(rotate.z);
+	Matrix4x4 rotateXmatrix = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYmatrix = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZmatrix = MakeRotateZMatrix(rotate.z);
 	Matrix4x4 rotateXYZmatrix = Multiply(rotateXmatrix, Multiply(rotateYmatrix, rotateZmatrix));
 
 	Matrix4x4 result{};
