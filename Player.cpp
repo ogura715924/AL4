@@ -1,5 +1,15 @@
 ﻿#include"Player.h"
 
+void (Player::*Player::pBehaviorUpdateTable[])() = {
+&Player::BehaviorRootUpdate, 
+&Player::BehaviorAttackUpdate,
+};
+
+void (Player::*Player::pBehaviorInitTable[])() = {
+    &Player::BehaviorRootInitialaize,
+    &Player::BehaviorAttackInitialize,
+};
+
 
 void Player::Initialize(
     const std::vector<Model*>& models) {
@@ -8,19 +18,15 @@ void Player::Initialize(
 	// NULLポインタチェック
 	assert(models.size());
 
-	// 引数として受け取ったデータをメンバ関数に記録(代入)する
-	//modelFighterBody_ = models[kModelIndexBody];
-	//modelFighterHead_ = models[kModelIndexHead];
-	//modelFighterL_arm_ = models[kModelIndexL_arm];
-	//modelFighterR_arm_ = models[kModelIndexR_arm];
-	
-	//ワールド返還の初期化
+	//ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransformBody_.Initialize();
 	worldTransformHead_.Initialize();
 	worldTransformL_arm_.Initialize();
 	worldTransformR_arm_.Initialize();
-	
+	//ワールド変換の初期化武器
+	worldTransformHummer_.Initialize();
+
 	// 基底クラスのベースキャラクターworldTransformを親子関係のベースとする
 	//ボディの親をにする
 	worldTransformBody_.parent_ = &worldTransform_;
@@ -30,6 +36,8 @@ void Player::Initialize(
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	//Rの腕の親をボディにする
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
+	//武器の親をLの腕にする
+	worldTransformHummer_.parent_ = &worldTransformL_arm_;
 
 	// Transration
 	worldTransform_.translation_ = {0, -2, 0};
@@ -37,12 +45,22 @@ void Player::Initialize(
 	worldTransformHead_.translation_ = {0, 1, 0};
 	worldTransformL_arm_.translation_ = {-1, 1, 0};
 	worldTransformR_arm_.translation_ = {1, 1, 0};
+	//武器
+	worldTransformHummer_.translation_ = {0, -1, 0};
+
 	// Scale
 	worldTransform_.scale_ = {1, 1, 1};
 	worldTransformBody_.scale_ = {1, 1, 1};
 	worldTransformHead_.scale_ = {1, 1, 1};
 	worldTransformL_arm_.scale_ = {1, 1, 1};
 	worldTransformR_arm_.scale_ = {1, 1, 1};
+	//武器
+	worldTransformHummer_.scale_ = {1, 1, 1};
+
+	//rotation
+	//武器
+	worldTransformHummer_.rotation_ = {0, 0, 0.5f};
+
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 
@@ -50,31 +68,55 @@ void Player::Initialize(
 }
 
 void Player::Update() {
-	//浮遊ギミック
-	UpdateFloatingGimmick();
-
-	//基底クラス
-	BaseCharacter::Update();
 	
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		// 速さ
-		const float speed = 0.3f;
-		// 移動量
-		Vector3 move = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
-		// 移動量に速さを反映
-		move = Multiply(speed, Normalize(move));
-		// 移動ベクトルをカメラの角度だけ回転する
-		Vector3 offset = TransformNormal(offset, worldTransform_.matWorld_);
-		// 移動
-		worldTransform_.translation_.x += move.x;
-		worldTransform_.translation_.z += move.z;
-
-		// Y軸周り角度
-		worldTransform_.rotation_.y = std::atan2(move.x, move.z);
+	//リクエストがあったら初期化と次の行動に移行
+	if (behaviorRequest_) {
+		behavior_ = behaviorRequest_.value();
+		(this->*pBehaviorInitTable[static_cast<size_t>(behavior_)])();
+		//ふるまいリクエストリセット
+		behaviorRequest_ = std::nullopt;
 	}
-	// 行列を更新
+	(this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
+
+	// Bevavior遷移の実装
+	if (behaviorRequest_) {
+
+		// 振るまいを変更する
+		behavior_ = behaviorRequest_.value();
+		// 各振る舞いごとの初期化を実行
+		switch (behavior_) {
+		case Behavior::kRoot:
+		default:
+			// 通常行動初期化
+			BehaviorRootInitialaize();
+			break;
+
+		case Behavior::kAttack:
+			// 攻撃行動初期化
+			BehaviorAttackInitialize();
+			break;
+		}
+		// 振るまいリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+
+		switch (behavior_) {
+		case Behavior::kRoot:
+		default:
+			// 通常行動更新
+			BehaviorRootUpdate();
+			break;
+
+		case Behavior::kAttack:
+			// 攻撃行動更新
+			BehaviorAttackUpdate();
+			break;
+		}
+
+	}
+
+
+
+// 行列を更新
 	// 本体
 	worldTransform_.UpdateMatrix();
 	// 体
@@ -85,7 +127,8 @@ void Player::Update() {
 	worldTransformL_arm_.UpdateMatrix();
 	// Rうで
 	worldTransformR_arm_.UpdateMatrix();
-
+	// 武器
+	worldTransformHummer_.UpdateMatrix();
 }
 
 void Player::Draw(const ViewProjection& ViewProjection) {
@@ -94,10 +137,14 @@ void Player::Draw(const ViewProjection& ViewProjection) {
 		models_[kModelIndexHead]->Draw(worldTransformHead_, ViewProjection);
 		models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, ViewProjection);
 		models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
-}
+	    if (behavior_== Behavior::kAttack) {
+		//武器
+	    models_[kModelIndexHammer]->Draw(worldTransformHummer_,ViewProjection);
+}}
 
 void Player::InitializeFloatingGimmick() { 
 	floatingParameter_ = 0.0f; 
+
 }
 
 void Player::UpdateFloatingGimmick() {
@@ -126,8 +173,106 @@ void Player::UpdateFloatingGimmick() {
 	//ImGui::End();
 }
 
+
+void Player::BehaviorRootInitialaize() {
+	// Transration
+	worldTransform_.translation_ = {0, -2, 0};
+	worldTransformBody_.translation_ = {0, -1, 0};
+	worldTransformHead_.translation_ = {0, 1, 0};
+	worldTransformL_arm_.translation_ = {-1, 1, 0};
+	worldTransformR_arm_.translation_ = {1, 1, 0};
+	// 武器
+	worldTransformHummer_.translation_ = {0, -1, 0};
+
+	// Scale
+	worldTransform_.scale_ = {1, 1, 1};
+	worldTransformBody_.scale_ = {1, 1, 1};
+	worldTransformHead_.scale_ = {1, 1, 1};
+	worldTransformL_arm_.scale_ = {1, 1, 1};
+	worldTransformR_arm_.scale_ = {1, 1, 1};
+	// 武器
+	worldTransformHummer_.scale_ = {1, 1, 1};
+
+	// rotation
+	// 武器
+	worldTransformHummer_.rotation_ = {0, 0, 0.5f};
+}
+
+void Player::BehaviorRootUpdate() {
+	// 浮遊ギミック
+	UpdateFloatingGimmick();
+
+	// 基底クラス
+	BaseCharacter::Update();
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// 速さ
+		const float speed = 0.3f;
+		// 移動量
+		Vector3 move = {
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
+		// 移動量に速さを反映
+		move = Multiply(speed, Normalize(move));
+		// 移動ベクトルをカメラの角度だけ回転する
+		Vector3 offset = TransformNormal(offset, worldTransform_.matWorld_);
+		// 移動
+		worldTransform_.translation_.x += move.x;
+		worldTransform_.translation_.z += move.z;
+
+		// Y軸周り角度
+		worldTransform_.rotation_.y = std::atan2(move.x, move.z);
+	}
+	
+}
+
+void Player::BehaviorAttackInitialize() {
+	attack_.time = 0;
+
+}
+
+void Player::BehaviorAttackUpdate() {
+	
+	float frame = 180;
+	// 1フレームでのパラメータ加算値
+	const float step = (float)(2.0f * M_PI / frame);
+	// パラメータを1ステップ分加算
+	floatingParameter_ += step;
+	// 1πを超えたら0に戻す
+	floatingParameter_ = (float)std::fmod(floatingParameter_, 1.0 * M_PI);
+	// 浮遊の振幅<m>
+	const float SwingWidth = 1.0;
+	// 攻撃を座標に反映
+	// 腕振り
+	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
+
+
+//イージング
+	attack_.time++;
+if (attack_.time <= attack_.kAnimMaxTime) {
+
+		kDegreeToRadian =(float) M_PI / 180;
+
+		 frame = (float)frame*(attack_.time / attack_.kAnimMaxTime);
+		float easeInBack = EaseInBack(frame);
+		float weaponAngle = (float)((90 * kDegreeToRadian)) * easeInBack;
+		float armAngle = (float)((120 * kDegreeToRadian)) * easeInBack;
+		worldTransformHummer_.rotation_.x = weaponAngle;
+		worldTransformL_arm_.rotation_.x = armAngle + (float)M_PI;	
+	} else if (attack_.time >= attack_.kAllFrame) {
+		attack_.time = 0;
+		behaviorRequest_ = Behavior::kRoot;
+	//} else if (attack_.kAnimMaxTime) {
+	//アニメーションが終わったらカメラをゆらす
+		//FollowCamera::SetShakkeFlag(true);
+	}
+
+}
+
 void Player::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
 }
+
+float Player::EaseInBack(float x) { return x; }
 

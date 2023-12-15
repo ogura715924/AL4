@@ -36,11 +36,13 @@ void GameScene::Initialize() {
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
 	 //modelPlayer_.reset(Model::CreateFromOBJ("player",true));
+	//武器
+	modelHammer.reset(Model::CreateFromOBJ("Hammer",true));
 
 	// 自キャラモデル
 	std::vector<Model*> playerModels = {
-	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
-	    modelFighterR_arm_.get()};
+		modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
+		modelFighterR_arm_.get(), modelHammer.get()};
 
 	// 自キャラの生成
 	player_ = std::make_unique<Player>();
@@ -139,7 +141,7 @@ void GameScene::Draw() {
 	// 追従カメラ
 	player_->Draw(followCamera_->GetViewProjection());
 	//敵キャラ
-	enemy_->Draw(debugCamera_->GetViewProjection());
+	enemy_->Draw(followCamera_->GetViewProjection());
 	// 天球の描画
 	// skydome_->Draw(debugCamera_->GetViewProjection());
 	skydome_->Draw(followCamera_->GetViewProjection());

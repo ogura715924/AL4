@@ -7,7 +7,11 @@ class FollowCamera {
 public:
 	void Initialaze();
 	void Update();
+	void CameraShaking();
+
 	void SetTarget(const WorldTransform* target) { target_ = target; }
+	//カメラ揺らすフラグ
+	void SetShakeFlag(){};
 	
 	//ビュープロジェクションの取得
 	const ViewProjection& GetViewProjection() { return viewProjection_;	}

@@ -72,6 +72,10 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelFighterR_arm_;
 	//std::unique_ptr<Model> modelPlayer_;
 	std::unique_ptr <Player> player_;
+
+	//武器
+	std::unique_ptr<Model> modelHammer;
+
 	//敵キャラ
 	std::unique_ptr<Model> modelEnemyBody_;
 	std::unique_ptr<Model> modelEnemyL_arm_;
@@ -81,6 +85,7 @@ private: // メンバ変数
 	//天球
 	std::unique_ptr<Model> modelSkydome_;
 	std::unique_ptr<Skydome> skydome_;
+
 	//床
 	std::unique_ptr<Model> modelGround_;
 	std::unique_ptr<Ground> ground_;

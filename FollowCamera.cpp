@@ -43,3 +43,7 @@ void FollowCamera::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 }
+
+void FollowCamera::CameraShaking() {
+
+}
