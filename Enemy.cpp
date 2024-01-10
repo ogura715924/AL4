@@ -35,7 +35,7 @@ void Enemy::Update() {
 	//移動の速さ
 	const float speed = 0.1f;
 
-	worldTransform_.rotation_.y += 0.01f;
+	worldTransform_.rotation_.y += 0.001f;
 
 //移動量
 	Vector3 move{0, 0, speed};
