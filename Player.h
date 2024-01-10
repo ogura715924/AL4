@@ -12,6 +12,7 @@
 #include"BaseCharacter.h"
 #include<optional>
 #include"FollowCamera.h"
+#include"Xinput.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>

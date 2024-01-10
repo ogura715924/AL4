@@ -69,18 +69,30 @@ void Player::Initialize(
 
 void Player::Update() {
 	
+	// 基底クラス
+	BaseCharacter::Update();
+
 	//リクエストがあったら初期化と次の行動に移行
 	if (behaviorRequest_) {
 		behavior_ = behaviorRequest_.value();
 		(this->*pBehaviorInitTable[static_cast<size_t>(behavior_)])();
 		//ふるまいリクエストリセット
-		behaviorRequest_ = std::nullopt;
+		behavior_ = Behavior::kRoot;
 	}
-	(this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
+
+	//攻撃
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+	     (this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
+		 // Aボタンの判定
+	      if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A) {
+				// Attack挙動に遷移
+				behavior_ = Behavior::kAttack;
+	      }
+		}
+	
 
 	// Bevavior遷移の実装
 	if (behaviorRequest_) {
-
 		// 振るまいを変更する
 		behavior_ = behaviorRequest_.value();
 		// 各振る舞いごとの初期化を実行
@@ -98,13 +110,16 @@ void Player::Update() {
 		}
 		// 振るまいリクエストをリセット
 		behaviorRequest_ = std::nullopt;
+	}
+
+		
 
 		switch (behavior_) {
+			//通常攻撃
 		case Behavior::kRoot:
 		default:
-			// 通常行動更新
-			BehaviorRootUpdate();
-			break;
+				BehaviorRootUpdate();
+					break;
 
 		case Behavior::kAttack:
 			// 攻撃行動更新
@@ -112,8 +127,7 @@ void Player::Update() {
 			break;
 		}
 
-	}
-
+	
 
 
 // 行列を更新
@@ -165,45 +179,18 @@ void Player::UpdateFloatingGimmick() {
 	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
 	worldTransformR_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
 
-	//数値調整
-	//ImGui::Begin("Player");
-	////ImGui::SliderFloat3("Head Translation", &(worldTransformHead_, SliderMin.x, SliderMax.x));
-	//ImGui::SliderInt3("Head Translation", &worldTransformHead_, SliderMin.x, SliderMax.x);
-
-	//ImGui::End();
 }
 
 
 void Player::BehaviorRootInitialaize() {
-	// Transration
-	worldTransform_.translation_ = {0, -2, 0};
-	worldTransformBody_.translation_ = {0, -1, 0};
-	worldTransformHead_.translation_ = {0, 1, 0};
-	worldTransformL_arm_.translation_ = {-1, 1, 0};
-	worldTransformR_arm_.translation_ = {1, 1, 0};
-	// 武器
-	worldTransformHummer_.translation_ = {0, -1, 0};
 
-	// Scale
-	worldTransform_.scale_ = {1, 1, 1};
-	worldTransformBody_.scale_ = {1, 1, 1};
-	worldTransformHead_.scale_ = {1, 1, 1};
-	worldTransformL_arm_.scale_ = {1, 1, 1};
-	worldTransformR_arm_.scale_ = {1, 1, 1};
-	// 武器
-	worldTransformHummer_.scale_ = {1, 1, 1};
-
-	// rotation
-	// 武器
-	worldTransformHummer_.rotation_ = {0, 0, 0.5f};
 }
 
 void Player::BehaviorRootUpdate() {
 	// 浮遊ギミック
 	UpdateFloatingGimmick();
 
-	// 基底クラス
-	BaseCharacter::Update();
+	
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
@@ -227,12 +214,20 @@ void Player::BehaviorRootUpdate() {
 }
 
 void Player::BehaviorAttackInitialize() {
-	attack_.time = 0;
+	attack_.time = 180;
 
 }
 
 void Player::BehaviorAttackUpdate() {
 	
+	//
+	attack_.time--;
+	if (attack_.time <= 0) {
+		behavior_ = Behavior::kRoot;
+		behaviorRequest_ = Behavior::kRoot;
+	}
+
+	//アニメーション
 	float frame = 180;
 	// 1フレームでのパラメータ加算値
 	const float step = (float)(2.0f * M_PI / frame);
