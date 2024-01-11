@@ -174,3 +174,62 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+
+void GameScene::CheckAllCollisions() {
+
+	// 判定対象AとBの座標
+	Vector3 PosA, PosB;
+	Vector3 RadiusA, RadiusB;
+	float PositionMeasure;
+	int RadiusMeasure;
+
+#pragma region ハンマーと敵キャラの当たり判定
+
+	// 敵キャラの座標
+	PosA = enemy_->GetWorldPosition();
+	RadiusA = enemy_->GetRadius();
+	// 敵キャラとハンマー全ての当たり判定
+		// ハンマーの座標
+		PosB = player_->GetHummerWorldPosition();
+		RadiusB = player_->GetHummerRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+		                  (PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		                  (PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			// 敵キャラの衝突時コールバックを呼び出す
+			enemy_->OnCollision();
+			// 自弾の衝突時コールバックを呼び出す
+			player_->OnCollision();
+			isSceneEndC_ = true;
+		}
+
+#pragma endregion
+
+
+#pragma region 自キャラと敵キャラの当たり判定
+
+	// 自キャラの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	// 自キャラと敵キャラ全ての当たり判定
+	// 敵キャラの座標
+	PosB = enemy_->GetWorldPosition();
+	RadiusB = enemy_->GetRadius();
+	// 座標AとBの距離を求める
+	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+	                  (PosB.y - PosA.y) * (PosB.y - PosA.y) + (PosB.z - PosA.z) * (PosB.z - PosA.z);
+	RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
+	// 弾と弾の交差判定
+	if (PositionMeasure <= RadiusMeasure) {
+		// 自キャラの衝突時コールバックを呼び出す
+		player_->OnCollision();
+		// 敵キャラの衝突時コールバックを呼び出す
+		enemy_->OnCollision();
+		isSceneEndO_ = true;
+	}
+#pragma endregion
+}

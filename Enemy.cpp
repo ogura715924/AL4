@@ -66,6 +66,8 @@ void Enemy::Draw(const ViewProjection& ViewProjection) {
 	//GameScene何も書いてない敵のモデルは入ってる
 }
 
+void Enemy::OnCollision() { isDead_ = true; }
+
 void Enemy::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
@@ -103,15 +105,3 @@ void Enemy::SetParent(const WorldTransform* parent) {
 //	// 引っ越した
 //	bullets_.push_back(newBullet);
 //}
-
-Vector3 Enemy::GetWorldPosition() {
-
-	// ワールド座標を入れる変数
-	Vector3 worldPos{};
-	worldTransform_.matWorld_.m;
-	// ワールド行列の平行移動成分を取得(ワールド座標)
-	worldPos.x = worldTransform_.matWorld_.m[3][0];
-	worldPos.y = worldTransform_.matWorld_.m[3][1];
-	worldPos.z = worldTransform_.matWorld_.m[3][2];
-	return worldPos;
-}

@@ -25,7 +25,7 @@ void OverScene::Update() {
 		}
 	}
 }
-}
+
 
 void OverScene::Draw() {
 	// コマンドリストの取得

@@ -11,7 +11,10 @@ public:
 	void Update()override;
 	void Draw(const ViewProjection& viewProjection_) override;
 	// 攻撃
-	void Fire(Model*model_);
+	//void Fire(Model*model_);
+
+	// 衝突を検知したら呼び出されるコールバック関数
+	void OnCollision();
 
 	// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
@@ -24,7 +27,21 @@ public:
 	// setterの利用
 	void SetPlayer(Player* player) { player_ = player; }
 
-	
+	// ワールド座標を取得
+	Vector3 GetWorldPosition() {
+
+		// ワールド座標を入れる変数
+		Vector3 worldPos{};
+		worldTransform_.matWorld_.m;
+		// ワールド行列の平行移動成分を取得(ワールド座標)
+		worldPos.x = worldTransform_.matWorld_.m[3][0];
+		worldPos.y = worldTransform_.matWorld_.m[3][1];
+		worldPos.z = worldTransform_.matWorld_.m[3][2];
+		return worldPos;
+	}
+	// 大きさ取得
+	Vector3 GetRadius() { return worldTransform_.scale_; }; 
+
 	private:
 	enum { kModelIndexBody,
 		kModelIndexL_arm,
@@ -68,4 +85,7 @@ public:
 
 		// 自キャラ
 	    Player* player_ = nullptr;
+
+	    // デスフラグ
+	    bool isDead_ = false;
 };

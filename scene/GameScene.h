@@ -51,6 +51,10 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollisions();
+
 	bool IsSceneEndOver() { return isSceneEndO_; }
 	bool IsSceneEndClear() { return isSceneEndC_; }
 	Scene::SceneType ClearScene() { return Scene::SceneType::kGameClear; }
