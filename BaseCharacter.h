@@ -6,6 +6,10 @@ protected:
 	std::vector<Model*> models_;
 	//ワールド返還データ
 	WorldTransform worldTransform_;
+	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformL_arm_;
+	WorldTransform worldTransformR_arm_;
+	WorldTransform worldTransformHammer_;
 
 	public:
 	/// <summary>
