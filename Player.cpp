@@ -38,7 +38,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformHummer_.parent_ = &worldTransformL_arm_;
 
 	// Transration
-	worldTransform_.translation_ = {0, 0, 0};
+	worldTransform_.translation_ = {0, -1, 0};
 	worldTransformBody_.translation_ = {0, 0, 0};
 	worldTransformHead_.translation_ = {0, 0, 0};
 	worldTransformL_arm_.translation_ = {0, 0, 0};
