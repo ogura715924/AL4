@@ -259,15 +259,26 @@ if (attack_.time <= attack_.kAnimMaxTime) {
 		behaviorRequest_ = Behavior::kRoot;
 	//} else if (attack_.kAnimMaxTime) {
 	//アニメーションが終わったらカメラをゆらす
-		//FollowCamera::SetShakkeFlag(true);
+		//FollowCamera::SetShakeFlag(true);
 	}
 
 }
 
-void Player::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
+void Player::SetParent(const WorldTransform* parent) {
 	worldTransform_.parent_ = parent;
 }
 
 float Player::EaseInBack(float x) { return x; }
 
+Vector3 Player::GetWorldPosition() {
+
+	// ワールド座標を入れる変数
+	Vector3 worldPos{};
+	worldTransform_.matWorld_.m;
+	// ワールド行列の平行移動成分を取得(ワールド座標)
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}

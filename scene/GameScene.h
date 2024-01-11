@@ -15,6 +15,9 @@
 #include <DebugCamera.h>
 #include <FollowCamera.h>
 #include <Enemy.h>
+#include<list>
+#include"EnemyBullet.h"
+#include"Scene.h"
 
 
 /// <summary>
@@ -47,6 +50,11 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	bool IsSceneEndOver() { return isSceneEndO_; }
+	bool IsSceneEndClear() { return isSceneEndC_; }
+	Scene::SceneType ClearScene() { return Scene::SceneType::kGameClear; }
+	Scene::SceneType OverScene() { return Scene::SceneType::kGameOver; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -89,4 +97,9 @@ private: // メンバ変数
 	//床
 	std::unique_ptr<Model> modelGround_;
 	std::unique_ptr<Ground> ground_;
+
+	// 弾
+	std::list<EnemyBullet*> enemyBullets_;
+	bool isSceneEndO_ = false;
+	bool isSceneEndC_ = false;
 };

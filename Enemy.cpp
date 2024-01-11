@@ -70,3 +70,48 @@ void Enemy::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
 }
+
+//void Enemy::Fire(Model*model_) {
+//	assert(player_);
+//
+//	// 弾の速度
+//	const float kBulletSpeed = 0.5f;
+//
+//	// 自キャラのワールド座標を取得する
+//	player_->GetWorldPosition();
+//	// 敵キャラのワールド座標を取得する
+//	GetWorldPosition();
+//	// 敵キャラ->自キャラの差分ベクトルを求める
+//	Vector3 DifferenceVector = {
+//	    GetWorldPosition().x - player_->GetWorldPosition().x,
+//	    GetWorldPosition().y - player_->GetWorldPosition().y,
+//	    GetWorldPosition().z - player_->GetWorldPosition().z};
+//	// ベクトルの正規化
+//	DifferenceVector = Normalize(DifferenceVector);
+//	// ベクトルの長さを速さに合わせる
+//	velocity_.x = DifferenceVector.x * kBulletSpeed;
+//	velocity_.y = DifferenceVector.y * kBulletSpeed;
+//	velocity_.z = DifferenceVector.z * kBulletSpeed;
+//
+//	// 弾を生成し初期化
+//	EnemyBullet* newBullet = new EnemyBullet();
+//	newBullet->Initialize(model_, worldTransform_.translation_, velocity_);
+//
+//	// 弾を登録する
+//	//	gameScene_->AddEnemyBullet(newBullet);
+//
+//	// 引っ越した
+//	bullets_.push_back(newBullet);
+//}
+
+Vector3 Enemy::GetWorldPosition() {
+
+	// ワールド座標を入れる変数
+	Vector3 worldPos{};
+	worldTransform_.matWorld_.m;
+	// ワールド行列の平行移動成分を取得(ワールド座標)
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}

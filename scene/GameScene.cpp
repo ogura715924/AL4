@@ -6,6 +6,10 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	// デストラクタ
+	for (EnemyBullet* bullet : enemyBullets_) {
+		delete bullet;
+	}
+	enemyBullets_.clear();
 }
 
 void GameScene::Initialize() {
@@ -148,6 +152,10 @@ void GameScene::Draw() {
 	// 床の更新
 	// ground_->Draw(debugCamera_->GetViewProjection());
 	ground_->Draw(followCamera_->GetViewProjection());
+	// 敵弾
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Draw(viewProjection_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
