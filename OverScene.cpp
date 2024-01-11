@@ -20,7 +20,7 @@ void OverScene::Update() {
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// Bボタンの判定
-		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B) {
+		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A) {
 			isSceneEnd_ = true;
 		}
 	}

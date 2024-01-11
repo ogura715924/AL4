@@ -43,7 +43,6 @@ public:
 	
 	// 衝突を検知したら呼び出されるコールバック関数
 	void OnCollision();
-
 	// ハンマー
 	void HammerOnCollision();
 

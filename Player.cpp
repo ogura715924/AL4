@@ -265,7 +265,9 @@ if (attack_.time <= attack_.kAnimMaxTime) {
 
 }
 
-void Player::OnCollision() { isDead_ = true; }
+void Player::OnCollision() { isDead_ = true;
+	//ClearScene()
+}
 void Player::HammerOnCollision() {  }
 
 // 親子関係を結ぶ

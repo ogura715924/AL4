@@ -200,11 +200,8 @@ void GameScene::CheckAllCollisions() {
 		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
-			// 敵キャラの衝突時コールバックを呼び出す
-			enemy_->OnCollision();
-			// 自弾の衝突時コールバックを呼び出す
-			player_->OnCollision();
-			isSceneEndC_ = true;
+			
+		ClearScene();
 		}
 
 #pragma endregion
@@ -226,10 +223,10 @@ void GameScene::CheckAllCollisions() {
 	// 弾と弾の交差判定
 	if (PositionMeasure <= RadiusMeasure) {
 		// 自キャラの衝突時コールバックを呼び出す
-		player_->OnCollision();
+		//player_->OnCollision();
 		// 敵キャラの衝突時コールバックを呼び出す
-		enemy_->OnCollision();
-		isSceneEndO_ = true;
+		//enemy_->OnCollision();
+		OverScene();
 	}
 #pragma endregion
 }
