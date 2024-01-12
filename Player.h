@@ -113,7 +113,7 @@ private:
 	float floatingParameterAttack_ = 0.0f;
 
 	//振るまい
-	Behavior behavior_ = Behavior::kRoot;
+	Behavior behavior_ = Behavior::kAttack;
 	//次の振るまいリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 

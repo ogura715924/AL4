@@ -73,7 +73,7 @@ void Player::Update() {
 		behavior_ = behaviorRequest_.value();
 		(this->*pBehaviorInitTable[static_cast<size_t>(behavior_)])();
 		// ふるまいリクエストリセット
-		behaviorRequest_ = Behavior::kAttack;
+		behaviorRequest_ = std::nullopt;
 	}
 	(this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
 
@@ -159,8 +159,22 @@ void Player::UpdateFloatingGimmick() {
 }
 
 void Player::BehaviorRootInitialaize() {
-	worldTransformHummer_.rotation_.x = 0;
-	worldTransformL_arm_.rotation_.x = 0;
+	// Transration
+	worldTransform_.translation_ = {0, 0, 0};
+	worldTransformBody_.translation_ = {0, 0, 0};
+	worldTransformHead_.translation_ = {0, 0, 0};
+	worldTransformL_arm_.translation_ = {0, 0, 0};
+	worldTransformR_arm_.translation_ = {0, 0, 0};
+	// 武器
+	worldTransformHummer_.translation_ = {0, 0, 0};
+
+	worldTransform_.rotation_ = {0, 0, 0};
+	worldTransformBody_.rotation_ = {0, 0, 0};
+	worldTransformHead_.rotation_ = {0, 0, 0};
+	worldTransformL_arm_.rotation_ = {0, 0, 0};
+	worldTransformR_arm_.rotation_ = {0, 0, 0};
+	// 武器
+	worldTransformHummer_.rotation_ = {0, 0, 0};
 }
 
 void Player::BehaviorRootUpdate() {
@@ -188,56 +202,75 @@ void Player::BehaviorRootUpdate() {
 		// Aボタンの判定
 		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A) {
 			// Attack挙動に遷移
-			behavior_ = Behavior::kAttack;
-			//behaviorRequest_ = Behavior::kAttack;
+			//behavior_ = Behavior::kAttack;
+			behaviorRequest_ = Behavior::kAttack;
 		}
 	}
 }
 
-void Player::BehaviorAttackInitialize() { attack_.time = 180; }
+void Player::BehaviorAttackInitialize() { 
+	attack_.time = 180;
+
+	// Transration
+	worldTransform_.translation_ = {0, 0, 0};
+	worldTransformBody_.translation_ = {0, 0, 0};
+	worldTransformHead_.translation_ = {0, 0, 0};
+	worldTransformL_arm_.translation_ = {0, 3, 0};
+	worldTransformR_arm_.translation_ = {0, 0, 0};
+	// 武器
+	worldTransformHummer_.translation_ = {0, 0, 0};
+
+	worldTransform_.rotation_ = {0, 0, 0};
+	worldTransformBody_.rotation_ = {0, 0, 0};
+	worldTransformHead_.rotation_ = {0, 0, 0};
+	worldTransformL_arm_.rotation_ = {0, 0, 0};
+	worldTransformR_arm_.rotation_ = {0, 0, 0};
+	// 武器
+	worldTransformHummer_.rotation_ = {0, 0, 0};
+}
 
 void Player::BehaviorAttackUpdate() {
 
 	//
 	attack_.time--;
 	if (attack_.time <= 0) {
-		behavior_ = Behavior::kRoot;
-		//behaviorRequest_ = Behavior::kRoot;
+		//behavior_ = Behavior::kRoot;
+		behaviorRequest_ = Behavior::kRoot;
 	}
 
 	// アニメーション
-	float frame = 180;
-	// 1フレームでのパラメータ加算値
-	const float step = (float)(2.0f * M_PI / frame);
-	// パラメータを1ステップ分加算
-	floatingParameter_ += step;
-	// 1πを超えたら0に戻す
-	floatingParameter_ = (float)std::fmod(floatingParameter_, 1.0 * M_PI);
-	// 浮遊の振幅<m>
-	const float SwingWidth = 1.0;
-	// 攻撃を座標に反映
-	// 腕振り
-	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
+	//float frame = 180;
+	//// 1フレームでのパラメータ加算値
+	//const float step = (float)(2.0f * M_PI / frame);
+	//// パラメータを1ステップ分加算
+	//floatingParameter_ += step;
+	//// 1πを超えたら0に戻す
+	//floatingParameter_ = (float)std::fmod(floatingParameter_, 1.0 * M_PI);
+	//// 浮遊の振幅<m>
+	//const float SwingWidth = 1.0;
+	//// 攻撃を座標に反映
+	//// 腕振り
+	//worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
 
-	// イージング
-	attack_.time++;
-	if (attack_.time <= attack_.kAnimMaxTime) {
+	//// イージング
+	//attack_.time++;
+	//if (attack_.time <= attack_.kAnimMaxTime) {
 
-		kDegreeToRadian = (float)M_PI / 180;
+	//	kDegreeToRadian = (float)M_PI / 180;
 
-		frame = (float)frame * (attack_.time / attack_.kAnimMaxTime);
-		float easeInBack = EaseInBack(frame);
-		float weaponAngle = (float)((90 * kDegreeToRadian)) * easeInBack;
-		float armAngle = (float)((120 * kDegreeToRadian)) * easeInBack;
-		worldTransformHummer_.rotation_.x = weaponAngle;
-		worldTransformL_arm_.rotation_.x = armAngle + (float)M_PI;
-	} else if (attack_.time >= attack_.kAllFrame) {
-		attack_.time = 0;
-		behaviorRequest_ = Behavior::kRoot;
-		//} else if (attack_.kAnimMaxTime) {
-		// アニメーションが終わったらカメラをゆらす
-		// FollowCamera::SetShakkeFlag(true);
-	}
+	//	frame = (float)frame * (attack_.time / attack_.kAnimMaxTime);
+	//	float easeInBack = EaseInBack(frame);
+	//	float weaponAngle = (float)((90 * kDegreeToRadian)) * easeInBack;
+	//	float armAngle = (float)((120 * kDegreeToRadian)) * easeInBack;
+	//	worldTransformHummer_.rotation_.x = weaponAngle;
+	//	worldTransformL_arm_.rotation_.x = armAngle + (float)M_PI;
+	//} else if (attack_.time >= attack_.kAllFrame) {
+	//	attack_.time = 0;
+	//	behaviorRequest_ = Behavior::kRoot;
+	//	//} else if (attack_.kAnimMaxTime) {
+	//	// アニメーションが終わったらカメラをゆらす
+	//	// FollowCamera::SetShakkeFlag(true);
+	//}
 }
 
 void Player::SetParent(const WorldTransform* parent) {
