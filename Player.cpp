@@ -23,7 +23,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformL_arm_.Initialize();
 	worldTransformR_arm_.Initialize();
 	// ワールド変換の初期化武器
-	worldTransformHummer_.Initialize();
+	worldTransformHammer_.Initialize();
 
 	// 基底クラスのベースキャラクターworldTransformを親子関係のベースとする
 	// ボディの親をにする
@@ -35,7 +35,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	// Rの腕の親をボディにする
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 	// 武器の親をLの腕にする
-	worldTransformHummer_.parent_ = &worldTransformL_arm_;
+	worldTransformHammer_.parent_ = &worldTransformL_arm_;
 
 	// Transration
 	worldTransform_.translation_ = {0, -1, 0};
@@ -44,7 +44,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformL_arm_.translation_ = {0, 0, 0};
 	worldTransformR_arm_.translation_ = {0, 0, 0};
 	// 武器
-	worldTransformHummer_.translation_ = {0, 0, 0};
+	worldTransformHammer_.translation_ = {0, 0, 0};
 
 	// Scale
 	worldTransform_.scale_ = {1, 1, 1};
@@ -53,12 +53,12 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformL_arm_.scale_ = {1, 1, 1};
 	worldTransformR_arm_.scale_ = {1, 1, 1};
 	// 武器
-	worldTransformHummer_.scale_ = {1, 1, 1};
+	worldTransformHammer_.scale_ = {1, 1, 1};
 
 	// rotation
 	worldTransform_.rotation_ = {0, 0,0 };
 	// 武器
-	worldTransformHummer_.rotation_ = {0, 0, 0};
+	worldTransformHammer_.rotation_ = {0, 0, 0};
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
@@ -74,10 +74,16 @@ void Player::Update() {
 		behavior_ = behaviorRequest_.value();
 		(this->*pBehaviorInitTable[static_cast<size_t>(behavior_)])();
 		// ふるまいリクエストリセット
-		behaviorRequest_ = Behavior::kAttack;
+		behaviorRequest_ = std::nullopt;
 	}
 	(this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
 
+	ImGui::Begin("window");
+	ImGui::DragFloat3("worldTransformL_arm_ transform", &worldTransformL_arm_.translation_.x);
+	ImGui::DragFloat3("worldTransformL_arm_ rotation", &worldTransformL_arm_.rotation_.x);
+	ImGui::DragFloat3("worldTransformHummer_ transform", &worldTransformHammer_.translation_.x);
+	ImGui::DragFloat3("worldTransformHummer_ rotation", &worldTransformHammer_.rotation_.x);
+	ImGui::End();
 
 	//// Bevavior遷移の実装
 	//if (behaviorRequest_) {
@@ -125,7 +131,7 @@ void Player::Update() {
 	// Rうで
 	worldTransformR_arm_.UpdateMatrix();
 	// 武器
-	worldTransformHummer_.UpdateMatrix();
+	worldTransformHammer_.UpdateMatrix();
 }
 
 void Player::Draw(const ViewProjection& ViewProjection) {
@@ -135,7 +141,7 @@ void Player::Draw(const ViewProjection& ViewProjection) {
 	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, ViewProjection);
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
 	// 武器
-	models_[kModelIndexHammer]->Draw(worldTransformHummer_, ViewProjection);
+		models_[kModelIndexHammer]->Draw(worldTransformHammer_, ViewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -160,13 +166,21 @@ void Player::UpdateFloatingGimmick() {
 }
 
 void Player::BehaviorRootInitialaize() {
-	worldTransformHummer_.rotation_.x = 0;
-	worldTransformL_arm_.rotation_.x = 0;
+	worldTransformL_arm_.translation_ = {0, 0, 0};
+	worldTransformHammer_.translation_ = {0, 0, 0};
+
+	worldTransform_.rotation_ = {0, 0, 0};
+	worldTransformBody_.rotation_ = {0, 0, 0};
+	worldTransformHead_.rotation_ = {0, 0, 0};
+	worldTransformL_arm_.rotation_ = {0, 0, 0};
+	worldTransformR_arm_.rotation_ = {0, 0, 0};
+	// 武器
+	worldTransformHammer_.rotation_ = {0, 0, 0};
 }
 
 void Player::BehaviorRootUpdate() {
 	// 浮遊ギミック
-	UpdateFloatingGimmick();
+	//UpdateFloatingGimmick();
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
@@ -189,13 +203,26 @@ void Player::BehaviorRootUpdate() {
 		// Aボタンの判定
 		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A) {
 			// Attack挙動に遷移
-			behavior_ = Behavior::kAttack;
-			//behaviorRequest_ = Behavior::kAttack;
+			//behavior_ = Behavior::kAttack;
+			behaviorRequest_ = Behavior::kAttack;
 		}
 	}
 }
 
-void Player::BehaviorAttackInitialize() { attack_.time = 180; }
+void Player::BehaviorAttackInitialize() { 
+	attack_.time = 20;
+
+	worldTransformL_arm_.translation_ = {4, 2, 0};
+	worldTransformHammer_.translation_ = {1, 2, 0};
+
+	worldTransform_.rotation_ = {0, 0, 0};
+	worldTransformBody_.rotation_ = {0, 0, 0};
+	worldTransformHead_.rotation_ = {0, 0, 0};
+	worldTransformR_arm_.rotation_ = {0, 0, 0};
+
+	worldTransformL_arm_.rotation_ = {0, 0, 9};
+	worldTransformHammer_.rotation_ = {5, 0, -1};
+}
 
 
 void Player::BehaviorAttackUpdate() {
@@ -203,48 +230,35 @@ void Player::BehaviorAttackUpdate() {
 	//
 	attack_.time--;
 	if (attack_.time <= 0) {
-		behavior_ = Behavior::kRoot;
-		//behaviorRequest_ = Behavior::kRoot;
-	}
-
-	// アニメーション
-	float frame = 180;
-	// 1フレームでのパラメータ加算値
-	const float step = (float)(2.0f * M_PI / frame);
-	// パラメータを1ステップ分加算
-	floatingParameter_ += step;
-	// 1πを超えたら0に戻す
-	floatingParameter_ = (float)std::fmod(floatingParameter_, 1.0 * M_PI);
-	// 浮遊の振幅<m>
-	const float SwingWidth = 1.0;
-	// 攻撃を座標に反映
-	// 腕振り
-	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * SwingWidth;
-
-	// イージング
-	attack_.time++;
-	if (attack_.time <= attack_.kAnimMaxTime) {
-
-		kDegreeToRadian = (float)M_PI / 180;
-
-		frame = (float)frame * (attack_.time / attack_.kAnimMaxTime);
-		float easeInBack = EaseInBack(frame);
-		float weaponAngle = (float)((90 * kDegreeToRadian)) * easeInBack;
-		float armAngle = (float)((120 * kDegreeToRadian)) * easeInBack;
-		worldTransformHummer_.rotation_.x = weaponAngle;
-		worldTransformL_arm_.rotation_.x = armAngle + (float)M_PI;
-	} else if (attack_.time >= attack_.kAllFrame) {
-		attack_.time = 0;
+		// behavior_ = Behavior::kRoot;
 		behaviorRequest_ = Behavior::kRoot;
-	//} else if (attack_.kAnimMaxTime) {
-	//アニメーションが終わったらカメラをゆらす
-		//FollowCamera::SetShakeFlag(true);
+	}
+		
+	// アニメーション
+	if (attack_.time <= 15) {
+		worldTransformL_arm_.translation_ = {4, 1, 1};
+		worldTransformL_arm_.rotation_ = {-1, 0, 9};
+
+		worldTransformHammer_.translation_ = {1, 2, 0};
+		worldTransformHammer_.rotation_ = {2, 0, -1};
 	}
 
-}
+	if (attack_.time <= 10) {
+		worldTransformL_arm_.translation_ = {2, 2, 0};
+		worldTransformL_arm_.rotation_ = {2, -2, 1};
 
-void Player::OnCollision() { isDead_ = true;
-	//ClearScene()
+		worldTransformHammer_.translation_ = {1, 2, 0};
+		worldTransformHammer_.rotation_ = {0, 0, -1};
+	}
+
+	if (attack_.time <=5) {
+		worldTransformL_arm_.translation_ = {2, -1, 0};
+		worldTransformL_arm_.rotation_ = {-8, -1, 8};
+
+		worldTransformHammer_.translation_ = {1, 2, 0};
+		worldTransformHammer_.rotation_ = {0, 0, -1};
+	}
+	
 }
 void Player::HammerOnCollision() {  }
 

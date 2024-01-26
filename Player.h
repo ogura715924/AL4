@@ -126,7 +126,7 @@ private:
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
 	//武器
-	WorldTransform worldTransformHummer_;
+	WorldTransform worldTransformHammer_;
 
 	// モデル
 	Model* modelFighterBody_ = nullptr;
@@ -153,7 +153,7 @@ private:
 	float floatingParameterAttack_ = 0.0f;
 
 	//振るまい
-	Behavior behavior_ = Behavior::kRoot;
+	Behavior behavior_ = Behavior::kAttack;
 	//次の振るまいリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
