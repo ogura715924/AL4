@@ -78,46 +78,12 @@ void Player::Update() {
 	}
 	(this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
 
-	ImGui::Begin("window");
-	ImGui::DragFloat3("worldTransformL_arm_ transform", &worldTransformL_arm_.translation_.x);
-	ImGui::DragFloat3("worldTransformL_arm_ rotation", &worldTransformL_arm_.rotation_.x);
-	ImGui::DragFloat3("worldTransformHummer_ transform", &worldTransformHammer_.translation_.x);
-	ImGui::DragFloat3("worldTransformHummer_ rotation", &worldTransformHammer_.rotation_.x);
-	ImGui::End();
-
-	//// Bevavior遷移の実装
-	//if (behaviorRequest_) {
-	//	// 振るまいを変更する
-	//	behavior_ = behaviorRequest_.value();
-	//	// 各振る舞いごとの初期化を実行
-	//	switch (behavior_) {
-	//	case Behavior::kRoot:
-	//	default:
-	//		// 通常行動初期化
-	//		BehaviorRootInitialaize();
-	//		break;
-
-	//	case Behavior::kAttack:
-	//		// 攻撃行動初期化
-	//		BehaviorAttackInitialize();
-	//		break;
-	//	}
-	//	// 振るまいリクエストをリセット
-	//	behaviorRequest_ = std::nullopt;
-	//}
-
-	//switch (behavior_) {
-	//	// 通常攻撃
-	//case Behavior::kRoot:
-	//default:
-	//	BehaviorRootUpdate();
-	//	break;
-
-	//case Behavior::kAttack:
-	//	// 攻撃行動更新
-	//	BehaviorAttackUpdate();
-	//	break;
-	//}
+	//ImGui::Begin("window");
+	//ImGui::DragFloat3("worldTransformL_arm_ transform", &worldTransformL_arm_.translation_.x);
+	//ImGui::DragFloat3("worldTransformL_arm_ rotation", &worldTransformL_arm_.rotation_.x);
+	//ImGui::DragFloat3("worldTransformHummer_ transform", &worldTransformHammer_.translation_.x);
+	//ImGui::DragFloat3("worldTransformHummer_ rotation", &worldTransformHammer_.rotation_.x);
+	//ImGui::End();
 
 	// 行列を更新
 	// 本体
@@ -169,9 +135,6 @@ void Player::BehaviorRootInitialaize() {
 	worldTransformL_arm_.translation_ = {0, 0, 0};
 	worldTransformHammer_.translation_ = {0, 0, 0};
 
-	worldTransform_.rotation_ = {0, 0, 0};
-	worldTransformBody_.rotation_ = {0, 0, 0};
-	worldTransformHead_.rotation_ = {0, 0, 0};
 	worldTransformL_arm_.rotation_ = {0, 0, 0};
 	worldTransformR_arm_.rotation_ = {0, 0, 0};
 	// 武器
@@ -180,11 +143,11 @@ void Player::BehaviorRootInitialaize() {
 
 void Player::BehaviorRootUpdate() {
 	// 浮遊ギミック
-	//UpdateFloatingGimmick();
+	UpdateFloatingGimmick();
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
-		const float speed = 0.3f;
+		const float speed = 0.5f;
 		// 移動量
 		Vector3 move = {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
@@ -214,11 +177,6 @@ void Player::BehaviorAttackInitialize() {
 
 	worldTransformL_arm_.translation_ = {4, 2, 0};
 	worldTransformHammer_.translation_ = {1, 2, 0};
-
-	worldTransform_.rotation_ = {0, 0, 0};
-	worldTransformBody_.rotation_ = {0, 0, 0};
-	worldTransformHead_.rotation_ = {0, 0, 0};
-	worldTransformR_arm_.rotation_ = {0, 0, 0};
 
 	worldTransformL_arm_.rotation_ = {0, 0, 9};
 	worldTransformHammer_.rotation_ = {5, 0, -1};

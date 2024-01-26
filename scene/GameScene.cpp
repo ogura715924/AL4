@@ -90,10 +90,16 @@ void GameScene::Initialize() {
 	followCamera_->Initialaze();
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
+
+	
 #pragma endregion
 }
 
 void GameScene::Update() {
+	//シーン
+	isSceneEndO_ = false;
+	isSceneEndC_ = false;
+
 	// プレイヤーの更新
 	player_->Update();
 	//敵の更新
@@ -110,6 +116,9 @@ void GameScene::Update() {
 	viewProjection_.matView = followCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
+
+	//当たり判定
+	CheckAllCollisions();
 }
 
 void GameScene::Draw() {
@@ -200,8 +209,7 @@ void GameScene::CheckAllCollisions() {
 		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
-			
-		ClearScene();
+		//isSceneEndC_ = true;
 		}
 
 #pragma endregion
@@ -226,7 +234,7 @@ void GameScene::CheckAllCollisions() {
 		//player_->OnCollision();
 		// 敵キャラの衝突時コールバックを呼び出す
 		//enemy_->OnCollision();
-		OverScene();
+		isSceneEndO_ = true;
 	}
 #pragma endregion
 }

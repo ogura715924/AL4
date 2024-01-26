@@ -11,7 +11,7 @@ void Ground::Initialize(Model*model)
 	//Transration
 	worldTransform_.translation_ = { 0,-3,0 };
 	//Scale
-	worldTransform_.scale_ = { 50,50,50 };
+	worldTransform_.scale_ = { 15,15,15 };
 	//ワールドトランスフォームの更新
 	worldTransform_.UpdateMatrix();
 }
