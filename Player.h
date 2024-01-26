@@ -86,7 +86,7 @@ private:
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
 	//武器
-	WorldTransform worldTransformHummer_;
+	WorldTransform worldTransformHammer_;
 
 	// モデル
 	Model* modelFighterBody_ = nullptr;

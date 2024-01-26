@@ -20,10 +20,10 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
 	// Transration
-	worldTransform_.translation_ = {0, -2, 0};
+	worldTransform_.translation_ = {10, -2, 0};
 	worldTransformBody_.translation_ = {0, 0, 0};
-	worldTransformL_arm_.translation_ = {-1, 1, 0};
-	worldTransformR_arm_.translation_ = {1, 1, 0};
+	worldTransformL_arm_.translation_ = {0, 0, 0};
+	worldTransformR_arm_.translation_ = {0, 0, 0};
 	// Scale
 	worldTransform_.scale_ = {1, 1, 1};
 	worldTransformBody_.scale_ = {1, 1, 1};
@@ -33,7 +33,7 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 
 void Enemy::Update() {
 	//移動の速さ
-	const float speed = 0.1f;
+	const float speed = -0.1f;
 
 	worldTransform_.rotation_.y += 0.01f;
 

@@ -1,7 +1,7 @@
-# Blender 3.3.1 MTL File: 'float.blend'
+# Blender 4.0.2 MTL File: 'AL4評価課題用player.blend'
 # www.blender.org
 
-newmtl マテリアル
+newmtl Material
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -9,4 +9,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd H:/Users/sfujisawa/Downloads/tex.png
+map_Kd C:/Users/81906/Downloads/col.png
