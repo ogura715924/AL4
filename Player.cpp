@@ -222,7 +222,14 @@ void Player::HammerOnCollision() {  }
 
 // 親子関係を結ぶ
 void Player::SetParent(const WorldTransform* parent) {
-	worldTransform_.parent_ = parent;
+	worldTransform_.parent_ = parent; }
+
+Vector3 Player::GetCenterPosition() const {
+//ローカル座標でのオフセット
+	const Vector3 offset = {0.0f, 1.5f, 0.0f};
+	//ワールド座標に変換
+	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
+	return worldPos;
 }
 
 float Player::EaseInBack(float x) { return x; }

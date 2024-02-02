@@ -1,7 +1,10 @@
 ﻿#include "Enemy.h"
+#include"Collider.h"
 
 //Playerと同じようにする
 void Enemy::Initialize(const std::vector<Model*>& models) {
+
+
 	// 基底クラスの初期化
 	BaseCharacter::Initialize(models);
 	// NULLポインタチェック
@@ -32,19 +35,19 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 }
 
 void Enemy::Update() {
-	//移動の速さ
-	const float speed = -0.1f;
-
-	worldTransform_.rotation_.y += 0.001f;
-
-//移動量
-	Vector3 move{0, 0, speed};
-	//回転行列
-	Matrix4x4 matRotY = MakeRotateYMatrix(worldTransform_.rotation_.y);
-	//移動量を回転に合わせて回転させる
-	move = TransformNormal(move, matRotY);
-	//移動
-	Add( worldTransform_.translation_,  move);
+//	//移動の速さ
+//	const float speed = -0.1f;
+//
+//	worldTransform_.rotation_.y += 0.001f;
+//
+////移動量
+//	Vector3 move{0, 0, speed};
+//	//回転行列
+//	Matrix4x4 matRotY = MakeRotateYMatrix(worldTransform_.rotation_.y);
+//	//移動量を回転に合わせて回転させる
+//	move = TransformNormal(move, matRotY);
+//	//移動
+//	Add( worldTransform_.translation_,  move);
 
 
 	// 行列を更新

@@ -53,6 +53,9 @@ public:
 	const WorldTransform& GetWorldTransform() { return worldTransform_; }
 	//const WorldTransform& GetWorldTransformPlayer() { return worldTransformBody_; }
 
+	//中心座標を取得
+	Vector3 GetCenterPosition() const override;
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
 
@@ -74,7 +77,7 @@ public:
 
 		// ワールド座標を入れる変数
 		Vector3 worldPos{};
-		worldTransformHead_.matWorld_.m;
+		worldTransformHammer_.matWorld_.m;
 		// ワールド行列の平行移動成分を取得(ワールド座標)
 		worldPos.x = worldTransformHammer_.matWorld_.m[3][0];
 		worldPos.y = worldTransformHammer_.matWorld_.m[3][1];

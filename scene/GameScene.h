@@ -18,6 +18,7 @@
 #include<list>
 #include"EnemyBullet.h"
 #include"Scene.h"
+#include"CollisionManager.h"
 
 
 /// <summary>
@@ -106,4 +107,7 @@ private: // メンバ変数
 	std::list<EnemyBullet*> enemyBullets_;
 	bool isSceneEndO_ = false;
 	bool isSceneEndC_ = false;
+
+	// デバック表示用モデル
+	CollisionManager* collisionManager_;
 };

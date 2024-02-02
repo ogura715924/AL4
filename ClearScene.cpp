@@ -19,9 +19,12 @@ void ClearScene::Update() {
 	isSceneEnd_ = false;
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		// Bボタンの判定
-		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A) {
-			isSceneEnd_ = true;
+		if (Input::GetInstance()->GetJoystickStatePrevious(0, prevjoyState)) {
+			// Aボタンの判定
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+			    !(prevjoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				isSceneEnd_ = true;
+			}
 		}
 	}
 }

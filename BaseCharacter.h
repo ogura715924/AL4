@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <Model.h>
-class BaseCharacter {
+#include<Collider.h>
+
+class BaseCharacter :public Collider {
 protected:
 	//モデルデータ配列
 	std::vector<Model*> models_;
@@ -30,4 +32,7 @@ protected:
 	virtual void Draw(const ViewProjection& viewProjection);
 
 	const WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//中心座標を取得
+	virtual Vector3 GetCenterPosition() const override;
 };

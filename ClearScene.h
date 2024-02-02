@@ -33,11 +33,13 @@ public:
 	void Draw();
 
 	bool IsSceneEnd() { return isSceneEnd_; }
-	Scene::SceneType NextScene() { return Scene::SceneType::kGamePlay; }
+	Scene::SceneType NextScene() { return Scene::SceneType::kTitle; }
 
 private: // メンバ変数
 	// ゲームパッドの状態を得る変数
 	XINPUT_STATE joyState;
+	XINPUT_STATE prevjoyState;
+
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;

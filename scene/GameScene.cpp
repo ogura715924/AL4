@@ -18,6 +18,9 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	//デバッグ用モデル
+	collisionManager_->Initilize();
+
 	// ファイル名を指定してテクスチャを読み込む
 	// 自機
 	// textureHandle_ = TextureManager::Load("kaeru.png");
@@ -193,28 +196,6 @@ void GameScene::CheckAllCollisions() {
 	float PositionMeasure;
 	int RadiusMeasure;
 
-#pragma region ハンマーと敵キャラの当たり判定
-
-	// 敵キャラの座標
-	PosA = enemy_->GetWorldPosition();
-	RadiusA = enemy_->GetRadius();
-	// 敵キャラとハンマー全ての当たり判定
-		// ハンマーの座標
-		PosB = player_->GetHummerWorldPosition();
-		RadiusB = player_->GetHummerRadius();
-		// 座標AとBの距離を求める
-		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-		                  (PosB.y - PosA.y) * (PosB.y - PosA.y) +
-		                  (PosB.z - PosA.z) * (PosB.z - PosA.z);
-		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
-		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure) {
-		//isSceneEndC_ = true;
-		}
-
-#pragma endregion
-
-
 #pragma region 自キャラと敵キャラの当たり判定
 
 	// 自キャラの座標
@@ -236,5 +217,26 @@ void GameScene::CheckAllCollisions() {
 		//enemy_->OnCollision();
 		isSceneEndO_ = true;
 	}
+#pragma endregion
+
+
+	#pragma region ハンマーと敵キャラの当たり判定
+
+	// 敵キャラの座標
+	PosA = enemy_->GetWorldPosition();
+	RadiusA = enemy_->GetRadius();
+	// 敵キャラとハンマー全ての当たり判定
+	// ハンマーの座標
+	PosB = player_->GetHummerWorldPosition();
+	RadiusB = player_->GetHummerRadius();
+	// 座標AとBの距離を求める
+	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+	                  (PosB.y - PosA.y) * (PosB.y - PosA.y) + (PosB.z - PosA.z) * (PosB.z - PosA.z);
+	RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
+	// 弾と弾の交差判定
+	if (PositionMeasure <= RadiusMeasure) {
+		isSceneEndC_ = true;
+	}
+
 #pragma endregion
 }
