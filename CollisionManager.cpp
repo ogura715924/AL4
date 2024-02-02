@@ -1,4 +1,4 @@
-#include "CollisionManager.h"
+ï»¿#include "CollisionManager.h"
 
 void CollisionManager::Initilize() {
 
@@ -7,16 +7,29 @@ void CollisionManager::Initilize() {
 }
 
 void CollisionManager::Reset() {
-//ƒŠƒXƒg‚ğ‹ó‚Á‚Û‚É‚·‚é
+//ãƒªã‚¹ãƒˆã‚’ç©ºã£ã½ã«ã™ã‚‹
 	colliders_.clear();
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	Vector3 coordinateA = colliderA->GetCenterPosition();
-	//ƒRƒ‰ƒCƒ_[B‚ÌÀ•W‚ğæ“¾
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼Bã®åº§æ¨™ã‚’å–å¾—
 	Vector3 coordinateB = colliderB->GetCenterPosition();
-	//À•W‚Ì·•ªƒxƒNƒgƒ‹
-	Vector3 subtract = SubtractionV3(coordinateB - coordinateA);
-	//À•WA‚ÆB‚Ì‹——£‚ğ‹‚ß‚é
-	float distance=
+	//åº§æ¨™ã®å·®åˆ†ãƒ™ã‚¯ãƒˆãƒ«
+	Vector3 subtract = SubtractionV3(coordinateB , coordinateA);
+	//åº§æ¨™Aã¨Bã®è·é›¢ã‚’æ±‚ã‚ã‚‹
+	float distance = Length(subtract);
+	//åŠå¾„
+	float radiusA = colliderA->GetRadius();
+	float radiusB = colliderB->GetRadius();
+	float radius = radiusA * radiusB;
+	//å¼¾ã¨å¼¾ã®è€ƒæŸ»åˆ¤å®š
+	if (distance <= radius) {
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼Aã®è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã‚’å‘¼ã³å‡ºã™
+		colliderA->OnCollision();
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼Bã®è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã‚’å‘¼ã³å‡ºã™
+		colliderB->OnCollision();
+	}
 }
+
+void CollisionManager::CheckAllCollisions() {}

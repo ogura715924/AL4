@@ -1,27 +1,27 @@
-#pragma once
+ï»¿#pragma once
 #include "WorldTransform.h"
 
 class Collider {
 public:
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initilize();
 
-	//”¼Œa‚ğæ“¾
+	//åŠå¾„ã‚’å–å¾—
 	float GetRadius() { return radius; };
-	//”¼Œa‚ğİ’è
+	//åŠå¾„ã‚’è¨­å®š
 	float SetRadius(int value) { radius = value; };
 
 	public:
-	//Õ“Ë‚ÉŒÄ‚Î‚ê‚éŠÖ”
-	    virtual void OnCollisiom() {}
-		//’†SÀ•W‚ğæ“¾
+	//è¡çªæ™‚ã«å‘¼ã°ã‚Œã‚‹é–¢æ•°
+	    virtual void OnCollision() {}
+		//ä¸­å¿ƒåº§æ¨™ã‚’å–å¾—
 	    virtual Vector3 GetCenterPosition() const = 0;
 	    virtual ~Collider() = default;
 
 	private:
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 	WorldTransform worldTransform_;
 
-	//Õ“Ë”¼Œa
+	//è¡çªåŠå¾„
 	float radius = 1.5f;
 };

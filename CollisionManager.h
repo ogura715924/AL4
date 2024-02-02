@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"Model.h"
 #include"Collider.h"
 #include"MyMath.h"
@@ -6,23 +6,26 @@
 class CollisionManager {
 public:
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initilize();
 
-	//ƒŠƒZƒbƒg
+	//ãƒªã‚»ãƒƒãƒˆ
 	void Reset();
 
 	/// <summary>
-	/// ƒRƒ‰ƒCƒ_[2‚Â‚ÌÕ“Ë”»’è‚Æ‰“š
+	/// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼2ã¤ã®è¡çªåˆ¤å®šã¨å¿œç­”
 	/// </summary>
 	/// <param name="colliderA"></param>
 	/// <param name="colliderB"></param>
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
+	//å…¨ã¦ã®å½“ãŸã‚Šåˆ¤å®šã®ãƒã‚§ãƒƒã‚¯
+	void CheckAllCollisions();
+
 private:
-	//ƒRƒ‰ƒCƒ_[
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	std::list<Collider*> colliders_;
 
-	// ƒfƒoƒbƒN•\¦—pƒ‚ƒfƒ‹
+	// ãƒ‡ãƒãƒƒã‚¯è¡¨ç¤ºç”¨ãƒ¢ãƒ‡ãƒ«
 	std::unique_ptr<Model> debugModel_;
 };
