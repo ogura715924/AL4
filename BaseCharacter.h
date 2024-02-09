@@ -9,9 +9,10 @@ protected:
 	//ワールド返還データ
 	WorldTransform worldTransform_;
 	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
-	WorldTransform worldTransformHammer_;
+	//WorldTransform worldTransformHammer_;
 
 	public:
 	/// <summary>
@@ -35,4 +36,5 @@ protected:
 
 	//中心座標を取得
 	virtual Vector3 GetCenterPosition() const override;
+
 };

@@ -23,7 +23,7 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
 	// Transration
-	worldTransform_.translation_ = {10, -2, 0};
+	worldTransform_.translation_ = {10, 0, 0};
 	worldTransformBody_.translation_ = {0, 0, 0};
 	worldTransformL_arm_.translation_ = {0, 0, 0};
 	worldTransformR_arm_.translation_ = {0, 0, 0};
@@ -35,9 +35,9 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 }
 
 void Enemy::Update() {
-//	//移動の速さ
-//	const float speed = -0.1f;
-//
+	//移動の速さ
+	//const float speed = -0.1f;
+
 //	worldTransform_.rotation_.y += 0.001f;
 //
 ////移動量
@@ -48,7 +48,7 @@ void Enemy::Update() {
 //	move = TransformNormal(move, matRotY);
 //	//移動
 //	Add( worldTransform_.translation_,  move);
-
+//
 
 	// 行列を更新
 	// 本体
@@ -74,6 +74,14 @@ void Enemy::OnCollision() { isDead_ = true; }
 void Enemy::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
+}
+
+Vector3 Enemy::GetCenterPosition() const {
+	// ローカル座標でのオフセット 
+	const Vector3 offset = {0.0f, 1.5f, 0.0f};
+	// ワールド座標に変換
+	Vector3 worldPos = Transform(offset, worldTransformBody_.matWorld_);
+	return worldPos;
 }
 
 //void Enemy::Fire(Model*model_) {

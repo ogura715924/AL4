@@ -2,7 +2,10 @@
 
 OverScene::OverScene() {}
 
-OverScene::~OverScene() { delete sprite_; };
+OverScene::~OverScene() {
+	delete sprite_;
+	delete sprite3_;
+};
 
 void OverScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -13,9 +16,15 @@ void OverScene::Initialize() {
 	textureHandle_ = TextureManager::Load("gaov.png");
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
 
+	textureHandle_ = TextureManager::Load("gaov.png");
+	sprite_ = Sprite::Create(textureHandle_, {0, 0});
+
 }
 
 void OverScene::Update() {
+
+	//fadeColor_.w -= 0.005f;
+	//sprite3_->SetColor(fadeColor_);
 
 	isSceneEnd_ = false;
 
@@ -43,6 +52,7 @@ void OverScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 	// 画像
+	//sprite3_->Draw();
 	sprite_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();

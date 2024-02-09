@@ -15,6 +15,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <Scene.h>
 
 //BaceCharacterの継承
 class Player : public BaseCharacter {
@@ -41,7 +42,7 @@ public:
 	void BehaviorAttackInitialize();
 	
 	// 衝突を検知したら呼び出されるコールバック関数
-	void OnCollision();
+	void OnCollision()override;
 	// ハンマー
 	void HammerOnCollision();
 
@@ -73,24 +74,25 @@ public:
 	 
 	//ハンマー
 	// ワールド座標を取得
-	Vector3 GetHummerWorldPosition() {
+	Vector3 GetHammerWorldPosition() {
 
-		// ワールド座標を入れる変数
-		Vector3 worldPos{};
-		worldTransformHammer_.matWorld_.m;
-		// ワールド行列の平行移動成分を取得(ワールド座標)
-		worldPos.x = worldTransformHammer_.matWorld_.m[3][0];
-		worldPos.y = worldTransformHammer_.matWorld_.m[3][1];
-		worldPos.z = worldTransformHammer_.matWorld_.m[3][2];
+		// ローカル座標でのオフセット
+		const Vector3 offset = {0.0f, 0.0f, 0.0f};
+		// ワールド座標に変換
+		Vector3 worldPos = Transform(offset, worldTransformHammerAttack_.matWorld_);
 		return worldPos;
 	}
 	// 大きさ取得
-	Vector3 GetHummerRadius() { return worldTransformHammer_.scale_; }; 
+	Vector3 GetHammerRadius() { return worldTransformHammerAttack_.scale_; }; 
 
 	// メンバ関数の追加
 	bool IsDead() const { return isDead_; }
-	// デスフラグ
-	bool isDead_ = false;
+
+
+	//攻撃中か
+	bool IsAttack() const { return isAttack_; }
+	
+	bool IsSceneEndOver() { return isSceneEndO_; }
 
 	// キーボード入力
 	Input* input_ = nullptr;
@@ -103,7 +105,8 @@ private:
 		kModelIndexL_arm,
 		kModelIndexR_arm,
 		//武器
-		kModelIndexHammer
+		kModelIndexHammer,
+		kModelIndexHammerAttack
 	};
 
 	//振るまい
@@ -129,6 +132,7 @@ private:
 	WorldTransform worldTransformR_arm_;
 	//武器
 	WorldTransform worldTransformHammer_;
+	WorldTransform worldTransformHammerAttack_;
 
 	// モデル
 	Model* modelFighterBody_ = nullptr;
@@ -137,6 +141,7 @@ private:
 	Model* modelFighterR_arm_ = nullptr;
 	//武器
 	Model* modelHammer = nullptr;
+	Model* modelHammerAttack = nullptr;
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
@@ -166,4 +171,11 @@ float EaseInBack(float x);
 
 	static void (Player::*pBehaviorUpdateTable[])();
 static void (Player::*pBehaviorInitTable[])();
+
+	// デスフラグ
+bool isDead_ = false;
+//攻撃フラグ
+bool isAttack_ = false;
+
+bool isSceneEndO_ = false;
 };

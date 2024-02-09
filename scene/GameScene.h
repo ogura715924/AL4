@@ -56,6 +56,7 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
+
 	bool IsSceneEndOver() { return isSceneEndO_; }
 	bool IsSceneEndClear() { return isSceneEndC_; }
 	Scene::SceneType ClearScene() { return Scene::SceneType::kGameClear; }
@@ -88,6 +89,7 @@ private: // メンバ変数
 
 	//武器
 	std::unique_ptr<Model> modelHammer;
+	std::unique_ptr<Model> modelHammerAttack;
 
 	//敵キャラ
 	std::unique_ptr<Model> modelEnemyBody_;
@@ -105,9 +107,16 @@ private: // メンバ変数
 
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;
+	
 	bool isSceneEndO_ = false;
 	bool isSceneEndC_ = false;
 
 	// デバック表示用モデル
-	CollisionManager* collisionManager_;
+	CollisionManager* DcollisionManager_;
+
+	//衝突マネージャー
+	std::unique_ptr<CollisionManager> collisionManager_;
+
+	// デバック表示用モデル
+	std::unique_ptr<Model> debugModel_;
 };

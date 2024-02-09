@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <ImGuiManager.h>
 
 GameScene::GameScene() {}
 
@@ -13,11 +14,14 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
+	debugModel_.reset(Model::CreateFromOBJ("ico", true));
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	//衝突マネージャの生成
+	collisionManager_ = std::make_unique<CollisionManager>();
 	//デバッグ用モデル
 	collisionManager_->Initilize();
 
@@ -45,11 +49,12 @@ void GameScene::Initialize() {
 	 //modelPlayer_.reset(Model::CreateFromOBJ("player",true));
 	//武器
 	modelHammer.reset(Model::CreateFromOBJ("Hammer",true));
+	modelHammerAttack.reset(Model::CreateFromOBJ("ico", true));
 
 	// 自キャラモデル
 	std::vector<Model*> playerModels = {
-		modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
-		modelFighterR_arm_.get(), modelHammer.get()};
+		modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(), modelFighterR_arm_.get(),
+	                                    modelHammer.get(),        modelHammerAttack.get()};
 
 	// 自キャラの生成
 	player_ = std::make_unique<Player>();
@@ -120,8 +125,15 @@ void GameScene::Update() {
 	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
 
+	//でバック表示用にワールドトランスフォームを更新
+	collisionManager_->UpdateTransform();
+
 	//当たり判定
 	CheckAllCollisions();
+
+	if (player_->IsSceneEndOver() == true) {
+		isSceneEndO_ = true;
+	}
 }
 
 void GameScene::Draw() {
@@ -168,6 +180,8 @@ void GameScene::Draw() {
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(viewProjection_);
 	}
+	//当たり判定の表示
+	//collisionManager_->Draw(followCamera_->GetViewProjection());
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -190,53 +204,67 @@ void GameScene::Draw() {
 
 void GameScene::CheckAllCollisions() {
 
+	//衝突マネージャのリセット
+	collisionManager_->Reset();
+
+	//コライダーをリストの登録
+	collisionManager_->AddCollider(player_.get());
+	//敵単体について
+	collisionManager_->AddCollider(enemy_.get());
+	//衝突判定と応答
+	collisionManager_->CheckAllCollisions();
+
+
 	// 判定対象AとBの座標
 	Vector3 PosA, PosB;
 	Vector3 RadiusA, RadiusB;
 	float PositionMeasure;
 	int RadiusMeasure;
 
-#pragma region 自キャラと敵キャラの当たり判定
-
-	// 自キャラの座標
-	PosA = player_->GetWorldPosition();
-	RadiusA = player_->GetRadius();
-	// 自キャラと敵キャラ全ての当たり判定
-	// 敵キャラの座標
-	PosB = enemy_->GetWorldPosition();
-	RadiusB = enemy_->GetRadius();
-	// 座標AとBの距離を求める
-	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-	                  (PosB.y - PosA.y) * (PosB.y - PosA.y) + (PosB.z - PosA.z) * (PosB.z - PosA.z);
-	RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
-	// 弾と弾の交差判定
-	if (PositionMeasure <= RadiusMeasure) {
-		// 自キャラの衝突時コールバックを呼び出す
-		//player_->OnCollision();
-		// 敵キャラの衝突時コールバックを呼び出す
-		//enemy_->OnCollision();
-		isSceneEndO_ = true;
-	}
-#pragma endregion
-
-
+//#pragma region 自キャラと敵キャラの当たり判定
+//
+//	// 自キャラの座標
+//	PosA = player_->GetWorldPosition();
+//	RadiusA = player_->GetRadius();
+//	// 自キャラと敵キャラ全ての当たり判定
+//	// 敵キャラの座標
+//	PosB = enemy_->GetWorldPosition();
+//	RadiusB = enemy_->GetRadius();
+//	// 座標AとBの距離を求める
+//	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+//	                  (PosB.y - PosA.y) * (PosB.y - PosA.y) + (PosB.z - PosA.z) * (PosB.z - PosA.z);
+//	RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
+//	// 弾と弾の交差判定
+//	if (PositionMeasure <= RadiusMeasure) {
+//		// 自キャラの衝突時コールバックを呼び出す
+//		//player_->OnCollision();
+//		// 敵キャラの衝突時コールバックを呼び出す
+//		//enemy_->OnCollision();
+//		
+//	}
+//#pragma endregion
+//
+//
 	#pragma region ハンマーと敵キャラの当たり判定
 
-	// 敵キャラの座標
-	PosA = enemy_->GetWorldPosition();
-	RadiusA = enemy_->GetRadius();
-	// 敵キャラとハンマー全ての当たり判定
-	// ハンマーの座標
-	PosB = player_->GetHummerWorldPosition();
-	RadiusB = player_->GetHummerRadius();
-	// 座標AとBの距離を求める
-	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-	                  (PosB.y - PosA.y) * (PosB.y - PosA.y) + (PosB.z - PosA.z) * (PosB.z - PosA.z);
-	RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
-	// 弾と弾の交差判定
-	if (PositionMeasure <= RadiusMeasure) {
-		isSceneEndC_ = true;
-	}
+	if (player_->IsAttack() == true) {
 
+		// 敵キャラの座標
+		PosA = enemy_->GetWorldPosition();
+		RadiusA = enemy_->GetRadius();
+		// 敵キャラとハンマー全ての当たり判定
+		// ハンマーの座標
+		PosB = player_->GetHammerWorldPosition();
+		RadiusB = player_->GetHammerRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+		                  (PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		                  (PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			isSceneEndC_ = true;
+		}
+	}
 #pragma endregion
 }

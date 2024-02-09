@@ -1,15 +1,20 @@
 ﻿#pragma once
 #include "WorldTransform.h"
+#include <Model.h>
 
 class Collider {
 public:
 	// 初期化
 	void Initilize();
+	//ワールドトランスフォームの更新
+	void UpdateWorldTransform();
+	//描画
+	//void Draw(Model* model, const ViewProjection& viewProjection);
 
 	//半径を取得
-	float GetRadius() { return radius; };
+	float GetRadius() { return radius_; };
 	//半径を設定
-	float SetRadius(int value) { radius = value; };
+	float SetRadius(float value) { radius_ = value; };
 
 	public:
 	//衝突時に呼ばれる関数
@@ -23,5 +28,5 @@ public:
 	WorldTransform worldTransform_;
 
 	//衝突半径
-	float radius = 1.5f;
+	float radius_ = 1.5f;
 };

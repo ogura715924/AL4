@@ -52,4 +52,17 @@ private: // メンバ変数
 	// 画像
 	uint32_t textureHandle_ = 0;
 	Sprite* sprite_ = nullptr;
+
+	uint32_t textureHandle2_ = 0;
+	Sprite* sprite2_ = nullptr;
+
+	Sprite* sprite3_ = nullptr;
+	Vector4 fadeColor_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	};
+
+	float anitime = 0;
 };

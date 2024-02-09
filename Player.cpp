@@ -1,4 +1,5 @@
 ﻿#include "Player.h"
+#include <ImGuiManager.h>
 
 void (Player::*Player::pBehaviorUpdateTable[])() = {
     &Player::BehaviorRootUpdate,
@@ -24,6 +25,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.Initialize();
 	// ワールド変換の初期化武器
 	worldTransformHammer_.Initialize();
+	worldTransformHammerAttack_.Initialize();
 
 	// 基底クラスのベースキャラクターworldTransformを親子関係のベースとする
 	// ボディの親をにする
@@ -37,6 +39,8 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	// 武器の親をLの腕にする
 	worldTransformHammer_.parent_ = &worldTransformL_arm_;
 
+	worldTransformHammerAttack_.parent_ = &worldTransformBody_;
+
 	// Transration
 	worldTransform_.translation_ = {0, -1, 0};
 	worldTransformBody_.translation_ = {0, 0, 0};
@@ -45,6 +49,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.translation_ = {0, 0, 0};
 	// 武器
 	worldTransformHammer_.translation_ = {0, 0, 0};
+	worldTransformHammerAttack_.translation_ = {1, 1, 4};
 
 	// Scale
 	worldTransform_.scale_ = {1, 1, 1};
@@ -78,12 +83,9 @@ void Player::Update() {
 	}
 	(this->*pBehaviorUpdateTable[static_cast<size_t>(behavior_)])();
 
-	//ImGui::Begin("window");
-	//ImGui::DragFloat3("worldTransformL_arm_ transform", &worldTransformL_arm_.translation_.x);
-	//ImGui::DragFloat3("worldTransformL_arm_ rotation", &worldTransformL_arm_.rotation_.x);
-	//ImGui::DragFloat3("worldTransformHummer_ transform", &worldTransformHammer_.translation_.x);
-	//ImGui::DragFloat3("worldTransformHummer_ rotation", &worldTransformHammer_.rotation_.x);
-	//ImGui::End();
+	
+
+	
 
 	// 行列を更新
 	// 本体
@@ -98,6 +100,7 @@ void Player::Update() {
 	worldTransformR_arm_.UpdateMatrix();
 	// 武器
 	worldTransformHammer_.UpdateMatrix();
+	worldTransformHammerAttack_.UpdateMatrix();
 }
 
 void Player::Draw(const ViewProjection& ViewProjection) {
@@ -108,6 +111,7 @@ void Player::Draw(const ViewProjection& ViewProjection) {
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
 	// 武器
 		models_[kModelIndexHammer]->Draw(worldTransformHammer_, ViewProjection);
+		models_[kModelIndexHammerAttack]->Draw(worldTransformHammerAttack_, ViewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -139,6 +143,7 @@ void Player::BehaviorRootInitialaize() {
 	worldTransformR_arm_.rotation_ = {0, 0, 0};
 	// 武器
 	worldTransformHammer_.rotation_ = {0, 0, 0};
+	isAttack_ = false;
 }
 
 void Player::BehaviorRootUpdate() {
@@ -180,6 +185,8 @@ void Player::BehaviorAttackInitialize() {
 
 	worldTransformL_arm_.rotation_ = {0, 0, 9};
 	worldTransformHammer_.rotation_ = {5, 0, -1};
+
+	isAttack_ = true;
 }
 
 
@@ -218,17 +225,30 @@ void Player::BehaviorAttackUpdate() {
 	}
 	
 }
-void Player::HammerOnCollision() {  }
+void Player::OnCollision() { 
+	isSceneEndO_ = true; 
+}
+
+void Player::HammerOnCollision() {}
 
 // 親子関係を結ぶ
 void Player::SetParent(const WorldTransform* parent) {
 	worldTransform_.parent_ = parent; }
 
 Vector3 Player::GetCenterPosition() const {
+	//// ワールド座標を入れる変数
+	//Vector3 worldPos;
+	//// ワールド行列の平行移動成分を取得(ワールド座標)
+	//worldPos.x = worldTransform_.matWorld_.m[3][0];
+	//worldPos.y = worldTransform_.matWorld_.m[3][1];
+	//worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	//return worldPos;
+
 //ローカル座標でのオフセット
 	const Vector3 offset = {0.0f, 1.5f, 0.0f};
 	//ワールド座標に変換
-	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
+	Vector3 worldPos = Transform(offset, worldTransformBody_.matWorld_);
 	return worldPos;
 }
 

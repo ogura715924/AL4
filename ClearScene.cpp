@@ -2,7 +2,10 @@
 
 ClearScene::ClearScene() {}
 
-ClearScene::~ClearScene() { delete sprite_; };
+ClearScene::~ClearScene() {
+	delete sprite_;
+	delete sprite3_;
+};
 
 void ClearScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -12,9 +15,15 @@ void ClearScene::Initialize() {
 	// 画像
 	textureHandle_ = TextureManager::Load("gacl.png");
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
+
+	textureHandle_ = TextureManager::Load("gacl.png");
+	sprite_ = Sprite::Create(textureHandle_, {0, 0});
 }
 
 void ClearScene::Update() {
+
+	/*fadeColor_.w -= 0.005f;
+	sprite3_->SetColor(fadeColor_);*/
 
 	isSceneEnd_ = false;
 
@@ -40,6 +49,7 @@ void ClearScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 	// 画像
+	//sprite3_->Draw();
 	sprite_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();

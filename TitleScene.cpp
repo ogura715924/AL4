@@ -1,8 +1,13 @@
 ﻿#include "TitleScene.h"
 
+
 TitleScene::TitleScene() {}
 
-TitleScene::~TitleScene() { delete sprite_; };
+TitleScene::~TitleScene() {
+	delete sprite_;
+	delete sprite2_;
+	delete sprite3_;
+};
 
 void TitleScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -12,12 +17,24 @@ void TitleScene::Initialize() {
 	// 画像
 	textureHandle_ = TextureManager::Load("tttl.png");
 	sprite_ = Sprite::Create(textureHandle_, {0, 0});
+	
+	textureHandle2_ = TextureManager::Load("tttl2.png");
+	sprite2_ = Sprite::Create(textureHandle2_, {0, 0});
+
+	uint32_t fadeTexHandle = TextureManager::Load("tttl.png");
+	sprite3_ = Sprite::Create(fadeTexHandle, {0, 0});
+
 	// 音
 	soundDataHandle_ = audio_->LoadWave("bgm.wav");
 	audio_->PlayWave(soundDataHandle_, true);
+
+	anitime = 0;
 }
 
 void TitleScene::Update() {
+
+	fadeColor_.w -= 0.005f;
+	sprite3_->SetColor(fadeColor_);
 
 	isSceneEnd_ = false;
 
@@ -30,6 +47,8 @@ void TitleScene::Update() {
 			}
 		}
 	}
+
+	anitime++;
 }
 
 void TitleScene::Draw() {
@@ -44,7 +63,17 @@ void TitleScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 	// 画像
-	sprite_->Draw();
+	sprite3_->Draw();
+
+	if (anitime >= 0&&anitime<=60) {
+		sprite_->Draw();
+	}
+	if (anitime >= 61 ) {
+		sprite2_->Draw();
+		if (anitime >= 120) {
+			anitime = 0;
+		}
+	}
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア

@@ -49,6 +49,14 @@ private: // メンバ変数
 	uint32_t soundDataHandle_ = 0;
 
 	// 画像
+	Sprite* sprite3_ = nullptr;
+	Vector4 fadeColor_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	};
+
 	uint32_t textureHandle_ = 0;
 	Sprite* sprite_ = nullptr;
 };
