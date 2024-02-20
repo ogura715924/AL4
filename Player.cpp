@@ -49,7 +49,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.translation_ = {0, 0, 0};
 	// 武器
 	worldTransformHammer_.translation_ = {0, 0, 0};
-	worldTransformHammerAttack_.translation_ = {1, 1, 4};
+	worldTransformHammerAttack_.translation_ = {1, 2, 4};
 
 	// Scale
 	worldTransform_.scale_ = {1, 1, 1};
@@ -59,6 +59,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.scale_ = {1, 1, 1};
 	// 武器
 	worldTransformHammer_.scale_ = {1, 1, 1};
+	worldTransformHammerAttack_.scale_ = {3, 3, 3};
 
 	// rotation
 	worldTransform_.rotation_ = {0, 0,0 };
@@ -67,6 +68,10 @@ void Player::Initialize(const std::vector<Model*>& models) {
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+
+
+	//???
+	behaviorRequest_ = Behavior::kAttack;
 }
 
 void Player::Update() {
@@ -111,7 +116,7 @@ void Player::Draw(const ViewProjection& ViewProjection) {
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
 	// 武器
 		models_[kModelIndexHammer]->Draw(worldTransformHammer_, ViewProjection);
-		models_[kModelIndexHammerAttack]->Draw(worldTransformHammerAttack_, ViewProjection);
+	//models_[kModelIndexHammerAttack]->Draw(worldTransformHammerAttack_, ViewProjection);
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -186,7 +191,6 @@ void Player::BehaviorAttackInitialize() {
 	worldTransformL_arm_.rotation_ = {0, 0, 9};
 	worldTransformHammer_.rotation_ = {5, 0, -1};
 
-	isAttack_ = true;
 }
 
 
@@ -214,6 +218,7 @@ void Player::BehaviorAttackUpdate() {
 
 		worldTransformHammer_.translation_ = {1, 2, 0};
 		worldTransformHammer_.rotation_ = {0, 0, -1};
+
 	}
 
 	if (attack_.time <=5) {
@@ -222,6 +227,9 @@ void Player::BehaviorAttackUpdate() {
 
 		worldTransformHammer_.translation_ = {1, 2, 0};
 		worldTransformHammer_.rotation_ = {0, 0, -1};
+
+		
+		isAttack_ = true;
 	}
 	
 }

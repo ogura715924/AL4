@@ -24,6 +24,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ClearScene* clearScene = nullptr;
 	OverScene* overScene = nullptr;
 
+	
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
 	win->CreateGameWindow(L" LE2C_04_オグラ_カエデ_AL4");
@@ -116,9 +117,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (gameScene->IsSceneEndClear()) {
 				sceneNo = gameScene->ClearScene();
 			}
+			titleScene->Initialize();
 
 			break;
-
+		
 		case Scene::SceneType::kGameClear:
 
 			clearScene->Update();

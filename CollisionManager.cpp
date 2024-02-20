@@ -2,7 +2,7 @@
 
 void CollisionManager::Initilize() {
 
-	//debugModel_.reset(Model::CreateFromOBJ("ico", true));
+	debugModel_.reset(Model::CreateFromOBJ("ico", true));
 
 }
 
@@ -12,7 +12,8 @@ void CollisionManager::Reset() {
 }
 
 void CollisionManager::AddCollider(Collider* collider) {
-	colliders_.push_back(collider); }
+	colliders_.push_back(collider);
+}
 
 void CollisionManager::UpdateTransform() {
 //全てのコライダーについて
@@ -22,13 +23,13 @@ void CollisionManager::UpdateTransform() {
 	}
 }
 //
-//void CollisionManager::Draw(const ViewProjection& viewProjection) {
-//	// 全てのコライダーについて
-//	for (Collider* collider : colliders_) {
-//		//描画
-//		//collider->Draw(debugModel_.get(), viewProjection);
-//	}
-//}
+void CollisionManager::Draw(const ViewProjection& viewProjection) {
+	// 全てのコライダーについて
+	for (Collider* collider : colliders_) {
+		//描画
+		collider->Draw(debugModel_.get(), viewProjection);
+	}
+}
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	Vector3 coordinateA = colliderA->GetCenterPosition();

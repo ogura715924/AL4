@@ -14,7 +14,7 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-	debugModel_.reset(Model::CreateFromOBJ("ico", true));
+//	debugModel_.reset(Model::CreateFromOBJ("ico", true));
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -47,6 +47,7 @@ void GameScene::Initialize() {
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
 	 //modelPlayer_.reset(Model::CreateFromOBJ("player",true));
+	 
 	//武器
 	modelHammer.reset(Model::CreateFromOBJ("Hammer",true));
 	modelHammerAttack.reset(Model::CreateFromOBJ("ico", true));
@@ -54,14 +55,15 @@ void GameScene::Initialize() {
 	// 自キャラモデル
 	std::vector<Model*> playerModels = {
 		modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(), modelFighterR_arm_.get(),
-	                                    modelHammer.get(),        modelHammerAttack.get()};
+	                                    modelHammer.get(),modelHammerAttack.get()};
 
 	// 自キャラの生成
 	player_ = std::make_unique<Player>();
 	// 自キャラの初期化
 	player_->Initialize(playerModels);
-	// player_->Initialize(modelFighterBody_.get(), modelFighterHead_.get(),
+	//player_->Initialize(modelFighterBody_.get(), modelFighterHead_.get(),
 	// modelFighterL_arm_.get(), modelFighterR_arm_.get(), textureHandle_);
+
 
 	// 敵キャラの3Dモデルの生成
 	modelEnemyBody_.reset(Model::CreateFromOBJ("needle_Body", true));
@@ -99,14 +101,40 @@ void GameScene::Initialize() {
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
-	
+
+	uint32_t fadeTexHandle = TextureManager::Load("tttl.png");
+	uint32_t fadeTexHandlec = TextureManager::Load("gacl.png");
+	uint32_t fadeTexHandleo = TextureManager::Load("gaov.png");
+	sprite3_ = Sprite::Create(fadeTexHandle, {0, 0});
+	fadeColor_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	};
+	spritec_ = Sprite::Create(fadeTexHandlec, {0, 0});
+	fadeColorc_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f,
+		0.0f
+	};
+	spriteo_ = Sprite::Create(fadeTexHandleo, {0, 0});
+	fadeColoro_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f, 0.0f
+	};
+	// シーン
+	isSceneEndO_ = false;
+	isSceneEndC_ = false;
+
+	atack = false;
 #pragma endregion
 }
 
 void GameScene::Update() {
-	//シーン
-	isSceneEndO_ = false;
-	isSceneEndC_ = false;
+	
 
 	// プレイヤーの更新
 	player_->Update();
@@ -131,9 +159,16 @@ void GameScene::Update() {
 	//当たり判定
 	CheckAllCollisions();
 
-	if (player_->IsSceneEndOver() == true) {
-		isSceneEndO_ = true;
-	}
+	
+
+	/*if (enemy_->IsSceneEndCler() == true) {
+		isSceneEndC_ = true;
+	}*/
+
+	fadeColor_.w -= 0.05f;
+	sprite3_->SetColor(fadeColor_);
+	
+	
 }
 
 void GameScene::Draw() {
@@ -144,7 +179,6 @@ void GameScene::Draw() {
 #pragma region 背景スプライト描画
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
@@ -191,6 +225,30 @@ void GameScene::Draw() {
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
 
+	sprite3_->Draw();
+
+	if (player_->IsSceneEndOver() == true) {
+		fadeColoro_.w += 0.05f;
+		spriteo_->SetColor(fadeColoro_);
+		if (fadeColoro_.w >= 0.05f) {
+			spriteo_->Draw();
+			if (fadeColoro_.w >= 0.95f) {
+				isSceneEndO_ = true;
+			}
+		}
+	}
+
+	if (atack == true) {
+		fadeColorc_.w += 0.05f;
+		spritec_->SetColor(fadeColorc_);
+	}
+	if (fadeColorc_.w >= 0.05f) {
+		spritec_->Draw();
+		if (fadeColorc_.w >= 0.95f) {
+			isSceneEndC_ = true;
+		}
+	}
+	
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
@@ -219,38 +277,15 @@ void GameScene::CheckAllCollisions() {
 	Vector3 PosA, PosB;
 	Vector3 RadiusA, RadiusB;
 	float PositionMeasure;
-	int RadiusMeasure;
+	float RadiusMeasure;
 
-//#pragma region 自キャラと敵キャラの当たり判定
-//
-//	// 自キャラの座標
-//	PosA = player_->GetWorldPosition();
-//	RadiusA = player_->GetRadius();
-//	// 自キャラと敵キャラ全ての当たり判定
-//	// 敵キャラの座標
-//	PosB = enemy_->GetWorldPosition();
-//	RadiusB = enemy_->GetRadius();
-//	// 座標AとBの距離を求める
-//	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-//	                  (PosB.y - PosA.y) * (PosB.y - PosA.y) + (PosB.z - PosA.z) * (PosB.z - PosA.z);
-//	RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
-//	// 弾と弾の交差判定
-//	if (PositionMeasure <= RadiusMeasure) {
-//		// 自キャラの衝突時コールバックを呼び出す
-//		//player_->OnCollision();
-//		// 敵キャラの衝突時コールバックを呼び出す
-//		//enemy_->OnCollision();
-//		
-//	}
-//#pragma endregion
-//
-//
+
 	#pragma region ハンマーと敵キャラの当たり判定
 
 	if (player_->IsAttack() == true) {
 
 		// 敵キャラの座標
-		PosA = enemy_->GetWorldPosition();
+		PosA = enemy_->GetCenterPosition();
 		RadiusA = enemy_->GetRadius();
 		// 敵キャラとハンマー全ての当たり判定
 		// ハンマーの座標
@@ -260,11 +295,17 @@ void GameScene::CheckAllCollisions() {
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
 		                  (PosB.y - PosA.y) * (PosB.y - PosA.y) +
 		                  (PosB.z - PosA.z) * (PosB.z - PosA.z);
-		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
+		RadiusMeasure =  (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
-			isSceneEndC_ = true;
+			atack = true;
+			Vector3 speed{0, 0, 0};
+			enemy_->SetSpeed(speed);
+			// フェード
 		}
+		
+		
 	}
+	
 #pragma endregion
 }

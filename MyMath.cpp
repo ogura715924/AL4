@@ -17,7 +17,7 @@ Vector3 Multiply(float scalar, const Vector3& v) {
 	return {scalar * v.x, scalar * v.y, scalar * v.z};
 }
 
-Matrix4x4 Multiply(const Matrix4x4& matrix, const Matrix4x4& matrixa) {
+Matrix4x4 Multiply44(const Matrix4x4& matrix, const Matrix4x4& matrixa) {
 	Matrix4x4 result{};
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
@@ -108,7 +108,7 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	Matrix4x4 rotateXmatrix = MakeRotateXMatrix(rotate.x);
 	Matrix4x4 rotateYmatrix = MakeRotateYMatrix(rotate.y);
 	Matrix4x4 rotateZmatrix = MakeRotateZMatrix(rotate.z);
-	Matrix4x4 rotateXYZmatrix = Multiply(rotateXmatrix, Multiply(rotateYmatrix, rotateZmatrix));
+	Matrix4x4 rotateXYZmatrix = Multiply44(rotateXmatrix, Multiply44(rotateYmatrix, rotateZmatrix));
 
 	Matrix4x4 result{};
 

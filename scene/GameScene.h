@@ -59,10 +59,14 @@ public: // メンバ関数
 
 	bool IsSceneEndOver() { return isSceneEndO_; }
 	bool IsSceneEndClear() { return isSceneEndC_; }
-	Scene::SceneType ClearScene() { return Scene::SceneType::kGameClear; }
 	Scene::SceneType OverScene() { return Scene::SceneType::kGameOver; }
+	Scene::SceneType ClearScene() { return Scene::SceneType::kGameClear; }
 
 private: // メンバ変数
+	// ゲームパッドの状態を得る変数
+	XINPUT_STATE joyState;
+	XINPUT_STATE prevjoyState;
+
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -119,4 +123,29 @@ private: // メンバ変数
 
 	// デバック表示用モデル
 	std::unique_ptr<Model> debugModel_;
+
+
+	Sprite* sprite3_ = nullptr;
+	Vector4 fadeColor_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	    1.0f,
+	};
+	Sprite* spritec_ = nullptr;
+	Vector4 fadeColorc_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f, 0.0f
+	};
+	Sprite* spriteo_ = nullptr;
+	Vector4 fadeColoro_ = {
+	    1.0f,
+	    1.0f,
+	    1.0f, 0.0f
+	};
+
+	float anitime = 0;
+
+	bool atack = false;
 };

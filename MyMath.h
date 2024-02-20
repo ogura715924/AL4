@@ -14,7 +14,7 @@ float Length(const Vector3& v);
 
 // スカラー倍
 Vector3 Multiply(float scalar, const Vector3& v);
-Matrix4x4 Multiply(const Matrix4x4& matrix, const Matrix4x4& matrixa);
+Matrix4x4 Multiply44(const Matrix4x4& matrix, const Matrix4x4& matrixa);
 
 // 1.X軸回転行列
 Matrix4x4 MakeRotateXMatrix(float radian);

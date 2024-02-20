@@ -25,16 +25,25 @@ void TitleScene::Initialize() {
 	sprite3_ = Sprite::Create(fadeTexHandle, {0, 0});
 
 	// 音
-	soundDataHandle_ = audio_->LoadWave("bgm.wav");
-	audio_->PlayWave(soundDataHandle_, true);
+	/*soundDataHandle_ = audio_->LoadWave("bgm.wav");
+	audio_->PlayWave(soundDataHandle_, true);*/
 
 	anitime = 0;
+
+	fadeColor_ = {
+	    0.0f,
+	    0.0f,
+	    0.0f,
+	    0.0f,
+	};
 }
 
 void TitleScene::Update() {
 
-	fadeColor_.w -= 0.005f;
-	sprite3_->SetColor(fadeColor_);
+	/*fadeColor_.w += 0.05f;
+	sprite_->SetColor(fadeColor_);
+	sprite2_->SetColor(fadeColor_);
+	sprite3_->SetColor(fadeColor_);*/
 
 	isSceneEnd_ = false;
 

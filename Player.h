@@ -76,10 +76,13 @@ public:
 	// ワールド座標を取得
 	Vector3 GetHammerWorldPosition() {
 
-		// ローカル座標でのオフセット
-		const Vector3 offset = {0.0f, 0.0f, 0.0f};
-		// ワールド座標に変換
-		Vector3 worldPos = Transform(offset, worldTransformHammerAttack_.matWorld_);
+		// ワールド座標を入れる変数
+		Vector3 worldPos{};
+		worldTransformHammerAttack_.matWorld_.m;
+		// ワールド行列の平行移動成分を取得(ワールド座標)
+		worldPos.x = worldTransformHammerAttack_.matWorld_.m[3][0];
+		worldPos.y = worldTransformHammerAttack_.matWorld_.m[3][1];
+		worldPos.z = worldTransformHammerAttack_.matWorld_.m[3][2];
 		return worldPos;
 	}
 	// 大きさ取得

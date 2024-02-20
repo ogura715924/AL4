@@ -7,7 +7,7 @@ void WorldTransform::UpdateMatrix() {
 
 	// 親があれば親のワールド行列掛ける
 	if (parent_) {
-		matWorld_ = Multiply(matWorld_, parent_->matWorld_);
+		matWorld_ = Multiply44(matWorld_, parent_->matWorld_);
 	}
 	// 定数バッファに転送する
 	TransferMatrix();

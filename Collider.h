@@ -9,7 +9,7 @@ public:
 	//ワールドトランスフォームの更新
 	void UpdateWorldTransform();
 	//描画
-	//void Draw(Model* model, const ViewProjection& viewProjection);
+	void Draw(Model* model, const ViewProjection& viewProjection);
 
 	//半径を取得
 	float GetRadius() { return radius_; };

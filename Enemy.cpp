@@ -36,19 +36,19 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 
 void Enemy::Update() {
 	//移動の速さ
-	//const float speed = -0.1f;
+	const float speed = -0.1f;
 
-//	worldTransform_.rotation_.y += 0.001f;
-//
-////移動量
-//	Vector3 move{0, 0, speed};
-//	//回転行列
-//	Matrix4x4 matRotY = MakeRotateYMatrix(worldTransform_.rotation_.y);
-//	//移動量を回転に合わせて回転させる
-//	move = TransformNormal(move, matRotY);
-//	//移動
-//	Add( worldTransform_.translation_,  move);
-//
+	worldTransform_.rotation_.y += 0.001f;
+
+//移動量
+	move_={0, 0, speed};
+	//回転行列
+	Matrix4x4 matRotY = MakeRotateYMatrix(worldTransform_.rotation_.y);
+	//移動量を回転に合わせて回転させる
+	move_ = TransformNormal(move_, matRotY);
+	//移動
+	Add( worldTransform_.translation_,  move_);
+
 
 	// 行列を更新
 	// 本体
@@ -66,10 +66,9 @@ void Enemy::Draw(const ViewProjection& ViewProjection) {
 	models_[kModelIndexBody]->Draw(worldTransformBody_, ViewProjection);
 	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, ViewProjection);
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, ViewProjection);
-	//GameScene何も書いてない敵のモデルは入ってる
 }
 
-void Enemy::OnCollision() { isDead_ = true; }
+void Enemy::OnCollision() { isSceneEndC_ = true; }
 
 void Enemy::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ

@@ -4,6 +4,7 @@
 #include "MyMath.h"
 #include <Player.h>
 #include <cassert>
+#include <Scene.h>
 
 class Enemy : public BaseCharacter {
 public:
@@ -16,10 +17,14 @@ public:
 	// 衝突を検知したら呼び出されるコールバック関数
 	void OnCollision() override;
 
+	bool IsSceneEndCler() { return isSceneEndC_; }
+
 	// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 	// 発射間隔
 	static const int kFireInterval = 180;
+
+	void SetSpeed(Vector3 move) { move = move_; }
 
 	// 親となるワールドトランスフォーム
 	void SetParent(const WorldTransform* parent);
@@ -89,10 +94,14 @@ private:
 
 	// 速度
 	Vector3 velocity_ = {0, 0, 0};
+	Vector3 move_;
 
 	// 自キャラ
 	Player* player_ = nullptr;
 
 	// デスフラグ
 	bool isDead_ = false;
+
+	
+bool isSceneEndC_ = false;
 };

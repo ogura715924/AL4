@@ -58,10 +58,10 @@ private: // メンバ変数
 
 	Sprite* sprite3_ = nullptr;
 	Vector4 fadeColor_ = {
-	    1.0f,
-	    1.0f,
-	    1.0f,
-	    1.0f,
+	    0.0f,
+	    0.0f,
+	    0.0f,
+	    0.0f,
 	};
 
 	float anitime = 0;

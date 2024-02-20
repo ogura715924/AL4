@@ -8,6 +8,6 @@ void Collider::UpdateWorldTransform() {
 	worldTransform_.UpdateMatrix();
 }
 
-//void Collider::Draw(Model* model, const ViewProjection& viewProjection) {
-//	model->Draw(worldTransform_, viewProjection);
-//}
+void Collider::Draw(Model* model, const ViewProjection& viewProjection) {
+	model->Draw(worldTransform_, viewProjection);
+}
