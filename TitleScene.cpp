@@ -25,8 +25,8 @@ void TitleScene::Initialize() {
 	sprite3_ = Sprite::Create(fadeTexHandle, {0, 0});
 
 	// 音
-	/*soundDataHandle_ = audio_->LoadWave("bgm.wav");
-	audio_->PlayWave(soundDataHandle_, true);*/
+	soundDataHandle_ = audio_->LoadWave("bgm.wav");
+	audio_->PlayWave(soundDataHandle_, true);
 
 	anitime = 0;
 

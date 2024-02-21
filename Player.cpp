@@ -4,11 +4,13 @@
 void (Player::*Player::pBehaviorUpdateTable[])() = {
     &Player::BehaviorRootUpdate,
     &Player::BehaviorAttackUpdate,
+    &Player::BehaviorJumpUpdate,
 };
 
 void (Player::*Player::pBehaviorInitTable[])() = {
     &Player::BehaviorRootInitialaize,
     &Player::BehaviorAttackInitialize,
+    &Player::BehaviorJumpInitilize,
 };
 
 void Player::Initialize(const std::vector<Model*>& models) {
@@ -159,25 +161,31 @@ void Player::BehaviorRootUpdate() {
 		// 速さ
 		const float speed = 0.5f;
 		// 移動量
-		Vector3 move = {
+		Jvelocity_= {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
 		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
 		// 移動量に速さを反映
-		move = Multiply(speed, Normalize(move));
+		Jvelocity_ = Multiply(speed, Normalize(Jvelocity_));
 		// 移動ベクトルをカメラの角度だけ回転する
 		Vector3 offset = TransformNormal(offset, worldTransform_.matWorld_);
 		// 移動
-		worldTransform_.translation_.x += move.x;
-		worldTransform_.translation_.z += move.z;
+		worldTransform_.translation_.x += Jvelocity_.x;
+		worldTransform_.translation_.z += Jvelocity_.z;
 
 		// Y軸周り角度
-		worldTransform_.rotation_.y = std::atan2(move.x, move.z);
+		worldTransform_.rotation_.y = std::atan2(Jvelocity_.x, Jvelocity_.z);
 
 		// Aボタンの判定
 		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A) {
 			// Attack挙動に遷移
 			//behavior_ = Behavior::kAttack;
 			behaviorRequest_ = Behavior::kAttack;
+		}
+
+		// Bボタンの判定
+		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_B) {
+			// 淳プ挙動に遷移
+			behaviorRequest_ = Behavior::kJump;
 		}
 	}
 }
@@ -192,7 +200,6 @@ void Player::BehaviorAttackInitialize() {
 	worldTransformHammer_.rotation_ = {5, 0, -1};
 
 }
-
 
 void Player::BehaviorAttackUpdate() {
 
@@ -233,6 +240,40 @@ void Player::BehaviorAttackUpdate() {
 	}
 	
 }
+
+
+void Player::BehaviorJumpInitilize() { 
+	worldTransform_.translation_.y = 0;
+
+//ジャンプ速度
+	const float kJumpFirstSpeed = 1.0f;
+	//ジャンプの速度を与える
+	Jvelocity_.y = kJumpFirstSpeed;
+}
+
+void Player::BehaviorJumpUpdate() {
+//移動
+	//worldTransform_.translation_ = Add(worldTransform_.translation_, Jvelocity_);
+	worldTransform_.translation_.y +=Jvelocity_.y;
+	//重力加速
+	const float kGravityAcceleration = 0.05f;
+	//加速度ベクトル
+	Vector3 accelerationVector = {0, -kGravityAcceleration, 0};
+	//加速する
+	//Jvelocity_ = Add(Jvelocity_, accelerationVector);
+	Jvelocity_.y +=  accelerationVector.y;
+
+	//着地
+	if (worldTransform_.translation_.y <= 0.0f) {
+		worldTransform_.translation_.y = 0;
+		//ジャンプ終了
+		behaviorRequest_ = Behavior::kRoot;
+	}
+
+}
+
+
+
 void Player::OnCollision() { 
 	isSceneEndO_ = true; 
 }

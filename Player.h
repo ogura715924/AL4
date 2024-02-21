@@ -41,6 +41,11 @@ public:
 	void BehaviorAttackUpdate();
 	void BehaviorAttackInitialize();
 	
+	//ジャンプ行動初期化
+	void BehaviorJumpInitilize();
+	//ジャンプ行動更新
+	void BehaviorJumpUpdate();
+
 	// 衝突を検知したら呼び出されるコールバック関数
 	void OnCollision()override;
 	// ハンマー
@@ -116,6 +121,7 @@ private:
 	enum class Behavior {
 		kRoot,//通常状態
 		kAttack,//攻撃中
+		kJump//ジャンプ
 	};
 
 	struct Animation {
@@ -181,4 +187,7 @@ bool isDead_ = false;
 bool isAttack_ = false;
 
 bool isSceneEndO_ = false;
+
+//ジャンプ速度
+Vector3 Jvelocity_ = {};
 };
